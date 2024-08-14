@@ -993,6 +993,12 @@ body.light .signatures {
   }
 }
 
+@media (max-width: 875px) {
+  .footer-links {
+    justify-content: center;
+  }
+}
+
 .footer-link img {
   block-size: 32px;
   inline-size: 32px;
