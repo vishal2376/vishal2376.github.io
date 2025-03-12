@@ -656,6 +656,10 @@ body.light .logo {
   transition: 0.6s all;
 }
 
+.work-img:hover {
+  transform: scale(1.05);
+}
+
 body.light .work-img {
   box-shadow: var(--shadow);
 }
