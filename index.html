@@ -7,6 +7,10 @@
 <title>Vishal Singh // KMP · Android · Security</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow:ital,wght@0,300;0,400;0,600;0,700;0,900;1,900&family=Barlow+Condensed:ital,wght@0,700;0,900;1,900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<script src="data/about.js" defer></script>
+<script src="data/experience.js" defer></script>
+<script src="data/projects.js" defer></script>
+<script src="data/skills.js" defer></script>
 <script src="script.js" defer></script>
 </head>
 <body>
@@ -67,33 +71,7 @@
 <section id="hero">
   <div class="h-grid"></div>
   <div class="h-g1"></div><div class="h-g2"></div>
-  <div class="h-in">
-    <div class="h-eye">Android Developer · Security Engineer</div>
-    <h1 class="h-name">
-      <span class="l1">VISHAL</span>
-      <span class="l2">SINGH<span class="fill">SINGH</span></span>
-    </h1>
-    <div class="h-chips">
-      <span class="chip chip-c">KMP · Android · iOS</span>
-      <span class="chip-sep">/</span>
-      <span class="chip chip-r">Security Engineer</span>
-      <span class="chip-sep">/</span>
-      <span class="chip chip-o">Open Source</span>
-      <span class="avail"><span class="dot"></span>Open to opportunities</span>
-    </div>
-    <p class="h-desc">
-      I build <strong>Android apps people love</strong> and make them <strong>impossible to hack</strong>.
-      Passionate about clean UI, open source, and reverse engineering things just to understand how they work.
-    </p>
-    <div class="h-btns">
-      <a href="#work" class="btn-g">View Projects</a>
-      <a href="https://drive.google.com/file/d/1m8AgJZq-NJCkTrRacLJvQGCCh-hvh6iC/view?usp=sharing" target="_blank" class="btn-o">Resume / CV</a>
-    </div>
-    <div class="h-soc">
-      <a href="https://github.com/vishal2376" target="_blank" rel="noopener" class="soc" title="GitHub"><svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.6-4.04-1.6-.55-1.4-1.34-1.77-1.34-1.77-1.1-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.5 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.25 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58C20.57 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg></a>
-      <a href="https://www.linkedin.com/in/vishal2376/" target="_blank" rel="noopener" class="soc" title="LinkedIn"><svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg></a>
-      <a href="https://x.com/vishal2376" target="_blank" rel="noopener" class="soc" title="Twitter / X"><svg viewBox="0 0 24 24"><path d="M18.9 1h3.7l-8 9.2L24 23h-7.4l-5.8-7.5L4.5 23H.8l8.6-9.8L0 1h7.6l5.2 6.8L18.9 1zm-1.3 19.7h2L6.5 3H4.3L17.6 20.7z"/></svg></a>
-    </div>
+  <div class="h-in" id="hero-content">
   </div>
   <div class="h-ghost">DROID</div>
   <div class="scroll-cue">scroll to explore</div>
@@ -110,84 +88,7 @@
     </div>
   </div>
 
-  <div class="about-hero rv">
-    <!-- Identity card -->
-    <div class="id-card">
-      <div class="avatar">VS</div>
-      <div class="id-name">Vishal Singh</div>
-      <div class="id-role">KMP · Android · Security</div>
-      <div class="id-badges">
-        <span class="id-badge ib-g">5 yrs experience</span>
-        <span class="id-badge ib-r">RE Enthusiast</span>
-        <span class="id-badge ib-c">KMP Dev</span>
-        <span class="id-badge ib-g">Open Source</span>
-      </div>
-      <!-- GitHub live stats -->
-      <div class="gh-stats-label"><div class="dot"></div> <span>Live</span> GitHub Stats</div>
-      <div class="gh-stats" id="gh-stats" style="width:100%;display:grid;grid-template-columns:1fr 1fr;gap:2px">
-        <div class="gh-stat"><div class="gh-stat-icon">📦</div><div class="gh-stat-n" id="gh-repos">-</div><div class="gh-stat-l">public repos</div></div>
-        <div class="gh-stat"><div class="gh-stat-icon">⭐</div><div class="gh-stat-n" id="gh-stars">-</div><div class="gh-stat-l">total stars</div></div>
-        <div class="gh-stat"><div class="gh-stat-icon">👥</div><div class="gh-stat-n" id="gh-followers">-</div><div class="gh-stat-l">followers</div></div>
-        <div class="gh-stat"><div class="gh-stat-icon">🔀</div><div class="gh-stat-n" id="gh-forks">-</div><div class="gh-stat-l">total forks</div></div>
-      </div>
-    </div>
-
-    <!-- Info cards -->
-    <div class="about-info">
-      <div class="info-card ic-card-c">
-        <div class="ic-head">
-          <div class="ic-icon ic-icon-c">🚀</div>
-          <div><div class="ic-title">Kotlin Everywhere</div><div class="ic-sub">// kmp · jetpack compose</div></div>
-        </div>
-        <div class="ic-body">Hands-on experience building and shipping multiple Android & iOS applications, including apps with thousands of installs and long-term open-source projects.</div>
-        <ul class="ic-list">
-          <li><strong>Kotlin Multiplatform</strong> - Android, iOS, Desktop</li>
-          <li><strong>Jetpack Compose</strong> - MVVM & Clean Architecture</li>
-          <li><strong>Coroutines & Flow</strong> - Room, DataStore & APIs</li>
-        </ul>
-      </div>
-
-      <div class="info-card ic-card-r">
-        <div class="ic-head">
-          <div class="ic-icon ic-icon-r">🔬</div>
-          <div><div class="ic-title">I Break Things</div><div class="ic-sub">// frida · ghidra · xposed</div></div>
-        </div>
-        <div class="ic-body">Expertise in Android Security and Reverse-engineering (APK & Native). I find vulnerabilities, patch them, and ship the fix before anyone else notices.</div>
-        <ul class="ic-list">
-          <li><strong>Runtime Hooking</strong> - Custom Xposed & Frida</li>
-          <li><strong>Core Android</strong> - Background & Accessibility Services</li>
-          <li><strong>APK hardening</strong> - obfuscation that fights back</li>
-        </ul>
-      </div>
-
-      <div class="info-card ic-card-g">
-        <div class="ic-head">
-          <div class="ic-icon ic-icon-g">🎨</div>
-          <div><div class="ic-title">UI That Moves Right</div><div class="ic-sub">// canvas · shaders · compose</div></div>
-        </div>
-        <div class="ic-body">Not just standard layouts. I build complex custom UI that feels incredibly smooth, pushing the boundaries of what is visually possible on mobile.</div>
-        <ul class="ic-list">
-          <li><strong>Complex custom UI</strong> - Fluid animations</li>
-          <li><strong>Interactive graphics</strong> - Canvas API</li>
-          <li><strong>Visual effects</strong> - Graphics Shaders</li>
-        </ul>
-      </div>
-
-      <div class="info-card ic-card-o">
-        <div class="ic-head">
-          <div class="ic-icon ic-icon-o">⚡</div>
-          <div><div class="ic-title">Beyond Android</div><div class="ic-sub">// rust · c++ · linux · 3d art</div></div>
-        </div>
-        <div class="ic-body">In addition to Android, I have a solid 9-year background in Linux, including extensive work with CLI tools, bash scripting, and systems programming.</div>
-        <ul class="ic-list">
-          <li><strong>Rust</strong> - GUI Text Editor, Backend Server</li>
-          <li><strong>C++</strong> - Ray Tracer, Virtual Assistant</li>
-          <li><strong>3D Art</strong> - Blender Modeling and Animation</li>
-        </ul>
-      </div>
-
-
-    </div>
+  <div class="about-hero rv" id="about-container">
   </div>
 </section>
 
@@ -202,145 +103,11 @@
     </div>
   </div>
 
-  <div class="timeline">
-    <div class="tl-line"></div>
-
-    <!-- DailyRounds SDE-1 - Current -->
-    <div class="tl-item active-role rv">
-      <div class="tl-date">
-        <span class="tl-year">2025</span>
-        <span class="tl-month">Jun</span>
-        <span class="tl-duration">Present</span>
-      </div>
-      <div class="tl-card">
-        <div class="tl-top">
-          <div>
-            <div class="tl-role">SDE-1 · Android Security Engineer</div>
-            <div class="tl-company">DailyRounds (Marrow)</div>
-            <div class="tl-loc">Bangalore · Hybrid</div>
-          </div>
-          <div class="tl-badges">
-            <span class="tl-badge tb-now">Current</span>
-            <span class="tl-badge tb-lead">Security</span>
-          </div>
-        </div>
-        <ul class="tl-bullets">
-          <li>Own the end-to-end security of Marrow - runtime tamper detection, Frida/Xposed hook detection, and RASP systems that respond to attacks in real time.</li>
-          <li>Offensive security research: reverse engineer the app with Ghidra & Jadx, find the attack surface, patch it, and ship hardened code before anyone outside notices.</li>
-          <li>Build content protection systems preventing unauthorized recording, screenshotting, and redistribution of premium course material.</li>
-          <li>APK hardening, certificate pinning, bytecode-level obfuscation - raising the cost of attacks high enough that it's not worth trying.</li>
-        </ul>
-        <div class="tl-tags">
-          <span class="tl-tag tt-r">RASP</span>
-          <span class="tl-tag tt-r">Frida Detection</span>
-          <span class="tl-tag tt-r">Xposed Detection</span>
-          <span class="tl-tag tt-o">Reverse Engineering</span>
-          <span class="tl-tag tt-o">Ghidra</span>
-          <span class="tl-tag tt-c">Kotlin</span>
-          <span class="tl-tag tt-c">Jetpack Compose</span>
-          <span class="tl-tag tt-p">APK Hardening</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- DailyRounds Intern -->
-    <div class="tl-item rv" style="transition-delay:.1s">
-      <div class="tl-date">
-        <span class="tl-year">2024</span>
-        <span class="tl-month">Sep – May</span>
-        <span class="tl-duration">9 months</span>
-      </div>
-      <div class="tl-card">
-        <div class="tl-top">
-          <div>
-            <div class="tl-role">SDE Intern</div>
-            <div class="tl-company">DailyRounds (Marrow)</div>
-            <div class="tl-loc">Bengaluru · On-site</div>
-          </div>
-          <div class="tl-badges">
-            <span class="tl-badge tb-intern">Internship</span>
-          </div>
-        </div>
-        <ul class="tl-bullets">
-          <li>Built an internal KMP app for managing sales and availability - single Clean MVVM codebase running on both Android and iOS simultaneously. Zero duplicated business logic.</li>
-          <li>Created an internal Android library from scratch for synchronized event logging, making the QA testing flow dramatically faster with zero manual correlation overhead.</li>
-          <li>Implemented better UI and smooth custom animations in the Marrow app using modern Jetpack Compose APIs - things that actually made engineers say "wait, how did you do that?"</li>
-        </ul>
-        <div class="tl-tags">
-          <span class="tl-tag tt-c">Kotlin Multiplatform</span>
-          <span class="tl-tag tt-c">Jetpack Compose</span>
-          <span class="tl-tag tt-p">KMP · Android · iOS</span>
-          <span class="tl-tag tt-p">Clean MVVM</span>
-          <span class="tl-tag tt-o">Custom Animations</span>
-          <span class="tl-tag tt-o">Internal Library</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Pokee Intern -->
-    <div class="tl-item rv" style="transition-delay:.2s">
-      <div class="tl-date">
-        <span class="tl-year">2023</span>
-        <span class="tl-month">Jun – Aug</span>
-        <span class="tl-duration">3 months</span>
-      </div>
-      <div class="tl-card">
-        <div class="tl-top">
-          <div>
-            <div class="tl-role">Android Developer Intern</div>
-            <div class="tl-company">Pokee</div>
-            <div class="tl-loc">Remote</div>
-          </div>
-          <div class="tl-badges">
-            <span class="tl-badge tb-intern">Internship</span>
-          </div>
-        </div>
-        <ul class="tl-bullets">
-          <li>Built a social connection app from scratch - 30+ custom layouts, 25+ API routes integrated, and a full MVVM + Hilt architecture set up before the senior team could finish their morning standup.</li>
-          <li>Shipped Firebase Auth, real-time Crashlytics monitoring, and a user profile system with active feedback loops - production-quality on the first intern project.</li>
-        </ul>
-        <div class="tl-tags">
-          <span class="tl-tag tt-c">Kotlin</span>
-          <span class="tl-tag tt-c">Jetpack Compose</span>
-          <span class="tl-tag tt-p">MVVM · Hilt</span>
-          <span class="tl-tag tt-o">Firebase</span>
-          <span class="tl-tag tt-o">REST API</span>
-        </div>
-      </div>
-    </div>
-
+  <div class="timeline" id="experience-timeline">
   </div>
 
   <!-- Achievements -->
-  <div class="ach-row rv" style="margin-top:32px">
-    <div class="ach-card">
-      <div class="ach-icon">🏆</div>
-      <div>
-        <div class="ach-title">AIR 101 · Zonal Rank 3</div>
-        <div class="ach-desc">National Cyber Olympiad (NCO) - top national ranking in cyber / computing competition.</div>
-      </div>
-    </div>
-    <div class="ach-card">
-      <div class="ach-icon">🌍</div>
-      <div>
-        <div class="ach-title">App Sold Internationally</div>
-        <div class="ach-desc">ScrollBlock was acquired internationally - built, shipped, and sold entirely by Vishal while in college.</div>
-      </div>
-    </div>
-    <div class="ach-card">
-      <div class="ach-icon">🚀</div>
-      <div>
-        <div class="ach-title">Google Jetpack Compose Camp</div>
-        <div class="ach-desc">Completed Google-organized Android Jetpack Compose Camp - certified in modern Android UI.</div>
-      </div>
-    </div>
-    <div class="ach-card">
-      <div class="ach-icon">⭐</div>
-      <div>
-        <div class="ach-title">4k+ Play Store Installs</div>
-        <div class="ach-desc">Combined installs across Snaptick (1k+, 4.6★) and Git Coach (3k+, 4.8★) within months of launch.</div>
-      </div>
-    </div>
+  <div class="ach-row rv" style="margin-top:32px" id="achievements-row">
   </div>
 </section>
 
@@ -355,95 +122,7 @@
     </div>
   </div>
 
-  <div class="projs">
-
-    <div class="proj rv">
-      <div class="p-info">
-        <div class="p-idx"><span>PROJECT_01</span></div>
-        <h3 class="p-name">Scroll Block</h3>
-        <span class="p-badge pb-sold">Acquired Internationally</span>
-        <div class="proj-metrics">
-          <span class="pmet">Status: <span class="mv">Sold</span></span>
-          <span class="pmet">Platform: <span class="mv">Android</span></span>
-        </div>
-        <p class="p-desc">Blocks addictive scrolling content like Instagram Reels and YouTube Shorts using Android's Accessibility Service. Includes smart timer, detailed usage analytics, and per-app customization.</p>
-        <div class="p-tags">
-          <span class="ptag ptag-c">Kotlin</span>
-          <span class="ptag ptag-c">Jetpack Compose</span>
-          <span class="ptag ptag-p">Accessibility Service</span>
-          <span class="ptag ptag-p">Room &amp; DataStore</span>
-          <span class="ptag ptag-o">MVVM</span>
-          <span class="ptag ptag-o">Hilt DI</span>
-          <span class="ptag ptag-o">Foreground Service</span>
-        </div>
-        <div class="p-links">
-          <a href="https://x.com/scrollblockapp" target="_blank" rel="noopener" class="pl">App Progress</a>
-        </div>
-      </div>
-      <div class="p-vis">
-        <img src="https://vishal2376.github.io/assets/images/work/scrollblock_banner.png" alt="Scroll Block" loading="lazy">
-        <div class="pnum">01</div>
-      </div>
-    </div>
-
-    <div class="proj rv">
-      <div class="p-info">
-        <div class="p-idx"><span>PROJECT_02</span></div>
-        <h3 class="p-name">Snaptick</h3>
-        <span class="p-badge pb-open">Open Source</span>
-        <div class="proj-metrics">
-          <span class="pmet">Installs: <span class="mv">1k+</span></span>
-          <span class="pmet">Rating: <span class="mv">4.6★</span></span>
-          <span class="pmet">Languages: <span class="mv">15+</span></span>
-        </div>
-        <p class="p-desc">A free daily planner with a minimal UI, Pomodoro timer, smart reminders, productivity analytics, and a home-screen Glance widget. Built offline-first with full localization in 15+ languages.</p>
-        <div class="p-tags">
-          <span class="ptag ptag-c">Kotlin</span>
-          <span class="ptag ptag-c">Jetpack Compose</span>
-          <span class="ptag ptag-p">Work Manager</span>
-          <span class="ptag ptag-p">Glance Widget</span>
-          <span class="ptag ptag-o">MVVM</span>
-          <span class="ptag ptag-o">Hilt DI</span>
-        </div>
-        <div class="p-links">
-          <a href="https://x.com/snaptickapp" target="_blank" rel="noopener" class="pl">App Progress</a>
-          <a href="https://github.com/vishal2376/snaptick" target="_blank" rel="noopener" class="pl sec">Source Code</a>
-        </div>
-      </div>
-      <div class="p-vis">
-        <img src="https://vishal2376.github.io/assets/images/work/snaptick_banner.png" alt="Snaptick" loading="lazy">
-        <div class="pnum">02</div>
-      </div>
-    </div>
-
-    <div class="proj rv">
-      <div class="p-info">
-        <div class="p-idx"><span>PROJECT_03</span></div>
-        <h3 class="p-name">Git Coach</h3>
-        <span class="p-badge pb-edu">Education</span>
-        <div class="proj-metrics">
-          <span class="pmet">Installs: <span class="mv">3k+</span></span>
-          <span class="pmet">Rating: <span class="mv">4.8★</span></span>
-          <span class="pmet">Languages: <span class="mv">8</span></span>
-        </div>
-        <p class="p-desc">A free Git learning app with command references, interactive quizzes, and searchable documentation. Localized in 8 languages. 3k+ installs and a 4.8/5 rating on the Play Store within months.</p>
-        <div class="p-tags">
-          <span class="ptag ptag-c">Kotlin</span>
-          <span class="ptag ptag-c">XML Layouts</span>
-          <span class="ptag ptag-p">Jetpack Navigation</span>
-          <span class="ptag ptag-p">Shared Preferences</span>
-          <span class="ptag ptag-o">Localization</span>
-        </div>
-        <div class="p-links">
-          <a href="https://github.com/vishal2376/git-coach" target="_blank" rel="noopener" class="pl">Source Code</a>
-        </div>
-      </div>
-      <div class="p-vis">
-        <img src="https://vishal2376.github.io/assets/images/work/gitcoach_banner.png" alt="Git Coach" loading="lazy">
-        <div class="pnum">03</div>
-      </div>
-    </div>
-
+  <div class="projs" id="projects-container">
   </div>
 </section>
 
@@ -458,50 +137,7 @@
     </div>
   </div>
 
-  <div class="skills-sections">
-
-    <!-- Dev Skills -->
-    <div class="rv">
-      <div class="skill-section-label">Development Stack</div>
-      <div class="skills-grid">
-        <div class="skill"><img src="https://skillicons.dev/icons?i=kotlin" class="skill-icon" alt="Kotlin" loading="lazy"><span class="skill-name">Kotlin</span></div>
-        <div class="skill"><img src="https://skillicons.dev/icons?i=androidstudio" class="skill-icon" alt="Android Studio" loading="lazy"><span class="skill-name">Android Studio</span></div>
-        <div class="skill" title="Kotlin Multiplatform"><img src="https://skillicons.dev/icons?i=kotlin" class="skill-icon" alt="KMP" loading="lazy" style="filter:hue-rotate(120deg) brightness(1.1)"><span class="skill-name">KMP</span></div>
-        <div class="skill"><img src="https://skillicons.dev/icons?i=swift" class="skill-icon" alt="Swift" loading="lazy"><span class="skill-name">Swift</span></div>
-        <div class="skill"><img src="https://skillicons.dev/icons?i=cpp" class="skill-icon" alt="C++" loading="lazy"><span class="skill-name">C++</span></div>
-        <div class="skill"><img src="https://skillicons.dev/icons?i=rust" class="skill-icon" alt="Rust" loading="lazy"><span class="skill-name">Rust</span></div>
-        <div class="skill"><img src="https://skillicons.dev/icons?i=py" class="skill-icon" alt="Python" loading="lazy"><span class="skill-name">Python</span></div>
-        <div class="skill"><img src="https://skillicons.dev/icons?i=go" class="skill-icon" alt="Go" loading="lazy"><span class="skill-name">Go</span></div>
-        <div class="skill"><img src="https://skillicons.dev/icons?i=firebase" class="skill-icon" alt="Firebase" loading="lazy"><span class="skill-name">Firebase</span></div>
-        <div class="skill"><img src="https://skillicons.dev/icons?i=mysql" class="skill-icon" alt="MySQL" loading="lazy"><span class="skill-name">MySQL</span></div>
-        <div class="skill"><img src="https://skillicons.dev/icons?i=mongodb" class="skill-icon" alt="MongoDB" loading="lazy"><span class="skill-name">MongoDB</span></div>
-        <div class="skill"><img src="https://skillicons.dev/icons?i=figma" class="skill-icon" alt="Figma" loading="lazy"><span class="skill-name">Figma</span></div>
-        <div class="skill"><img src="https://skillicons.dev/icons?i=blender" class="skill-icon" alt="Blender" loading="lazy"><span class="skill-name">Blender</span></div>
-        <div class="skill"><img src="https://skillicons.dev/icons?i=neovim" class="skill-icon" alt="Neovim" loading="lazy"><span class="skill-name">Neovim</span></div>
-        <div class="skill"><img src="https://skillicons.dev/icons?i=linux" class="skill-icon" alt="Linux" loading="lazy"><span class="skill-name">Linux</span></div>
-        <div class="skill"><img src="https://skillicons.dev/icons?i=postman" class="skill-icon" alt="Postman" loading="lazy"><span class="skill-name">Postman</span></div>
-      </div>
-    </div>
-
-    <!-- Security Skills -->
-    <div class="rv">
-      <div class="skill-section-label sec-label-r">Security &amp; Reverse Engineering</div>
-      <div class="sec-skills-grid">
-        <div class="sec-skill"><div class="sec-skill-icon">🔬</div><div class="sec-skill-info"><div class="sec-skill-name">Frida</div><div class="sec-skill-cat">Dynamic Instrumentation</div></div></div>
-        <div class="sec-skill"><div class="sec-skill-icon">👁</div><div class="sec-skill-info"><div class="sec-skill-name">Ghidra</div><div class="sec-skill-cat">Static Analysis</div></div></div>
-        <div class="sec-skill"><div class="sec-skill-icon">📦</div><div class="sec-skill-info"><div class="sec-skill-name">Jadx</div><div class="sec-skill-cat">APK Decompiler</div></div></div>
-        <div class="sec-skill"><div class="sec-skill-icon">📱</div><div class="sec-skill-info"><div class="sec-skill-name">ADB</div><div class="sec-skill-cat">Android Debug Bridge</div></div></div>
-        <div class="sec-skill"><div class="sec-skill-icon">🔓</div><div class="sec-skill-info"><div class="sec-skill-name">APK Analysis</div><div class="sec-skill-cat">Binary Inspection</div></div></div>
-        <div class="sec-skill"><div class="sec-skill-icon">🌐</div><div class="sec-skill-info"><div class="sec-skill-name">Burp Suite</div><div class="sec-skill-cat">Network Interception</div></div></div>
-        <div class="sec-skill"><div class="sec-skill-icon">🛡</div><div class="sec-skill-info"><div class="sec-skill-name">RASP</div><div class="sec-skill-cat">Runtime Self-Protection</div></div></div>
-        <div class="sec-skill"><div class="sec-skill-icon">🔒</div><div class="sec-skill-info"><div class="sec-skill-name">SSL Pinning</div><div class="sec-skill-cat">Certificate Security</div></div></div>
-        <div class="sec-skill"><div class="sec-skill-icon">🚨</div><div class="sec-skill-info"><div class="sec-skill-name">Root Detection</div><div class="sec-skill-cat">Device Integrity</div></div></div>
-        <div class="sec-skill"><div class="sec-skill-icon">🧪</div><div class="sec-skill-info"><div class="sec-skill-name">Penetration Testing</div><div class="sec-skill-cat">Android PenTest</div></div></div>
-        <div class="sec-skill"><div class="sec-skill-icon">🏗</div><div class="sec-skill-info"><div class="sec-skill-name">APK Hardening</div><div class="sec-skill-cat">Obfuscation &amp; ProGuard</div></div></div>
-        <div class="sec-skill"><div class="sec-skill-icon">🎯</div><div class="sec-skill-info"><div class="sec-skill-name">Hook Detection</div><div class="sec-skill-cat">Anti-Frida / Anti-Xposed</div></div></div>
-      </div>
-    </div>
-
+  <div class="skills-sections" id="skills-container">
   </div>
 </section>
 
@@ -517,17 +153,7 @@
   </div>
 
   <div class="contact-grid rv">
-    <div class="c-left">
-      <div class="hire-tag"><span class="hire-dot"></span>Available for new projects</div>
-      <h3>Let's build something great together</h3>
-      <p>I'm a developer who cares about <strong>craft</strong> - apps that look great, run smooth, and handle edge cases nobody else thought about.</p>
-      <p>Whether it's a <strong>new Android product</strong>, a <strong>security audit</strong>, or an open-source collab - I'm always open to interesting problems. I also do <strong>3D animations in Blender</strong> for fun, so I can make your app look cool too.</p>
-      <div class="c-links">
-        <a href="https://github.com/vishal2376" target="_blank" rel="noopener" class="c-link"><span class="ci">⌥</span> github.com/vishal2376</a>
-        <a href="https://www.linkedin.com/in/vishal2376/" target="_blank" rel="noopener" class="c-link"><span class="ci">in</span> linkedin.com/in/vishal2376</a>
-        <a href="https://x.com/vishal2376" target="_blank" rel="noopener" class="c-link"><span class="ci">𝕏</span> x.com/vishal2376</a>
-        <a href="mailto:vishalsingh2376@gmail.com" class="c-link"><span class="ci">@</span> vishalsingh2376@gmail.com</a>
-      </div>
+    <div class="c-left" id="contact-left">
     </div>
 
     <div class="c-form">
