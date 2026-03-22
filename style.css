@@ -53,10 +53,10 @@ body.on-link #cur-r{transform:translate(-50%,-50%) scale(.3);opacity:0}
 .nav-links .ni{color:var(--orange);margin-right:4px;font-size:10px}
 .nav-cv{font-family:var(--mono);font-size:12px;padding:7px 16px;border:1px solid var(--green);color:var(--green);text-decoration:none;border-radius:2px;transition:all .2s;letter-spacing:1px;background:transparent;text-transform:uppercase}
 .nav-cv:hover{background:var(--green);color:var(--bg)}
-.nav-blog{font-family:var(--mono);font-size:12px;padding:7px 16px;border:1px solid var(--cyan);color:var(--bg);text-decoration:none;border-radius:2px;transition:all .2s;letter-spacing:1.5px;background:var(--cyan);text-transform:uppercase;position:relative;overflow:hidden}
+.nav-blog{font-family:var(--mono);font-size:12px;padding:7px 16px;border:1px solid var(--cyan);color:var(--cyan);text-decoration:none;border-radius:2px;transition:all .2s;letter-spacing:1.5px;background:transparent;text-transform:uppercase;position:relative;overflow:hidden}
 .nav-blog::before{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);animation:navShimmer 2.2s ease-in-out infinite}
 @keyframes navShimmer{0%{left:-100%}60%,100%{left:150%}}
-.nav-blog:hover{background:transparent;color:var(--cyan);box-shadow:0 0 15px rgba(0,207,255,.3)}
+.nav-blog:hover{background:var(--cyan);color:var(--bg);box-shadow:0 0 15px rgba(0,207,255,.3)}
 .ham{display:none;flex-direction:column;gap:5px;background:none;border:1px solid var(--border);padding:9px 11px;border-radius:2px;cursor:pointer}
 .ham span{display:block;width:18px;height:1px;background:var(--text);transition:all .28s}
 .mob{display:none;position:fixed;top:64px;left:0;right:0;background:rgba(8,10,13,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:20px 48px;flex-direction:column;gap:0;z-index:999}
@@ -97,10 +97,10 @@ body.on-link #cur-r{transform:translate(-50%,-50%) scale(.3);opacity:0}
 .h-desc strong{color:var(--text);font-weight:600}
 
 .h-btns{display:flex;gap:12px;margin-top:38px;flex-wrap:wrap;opacity:0;animation:su .6s .85s ease forwards}
-.btn-g{font-family:var(--mono);font-size:11px;padding:13px 30px;background:var(--green);color:var(--bg);text-decoration:none;border-radius:2px;font-weight:700;letter-spacing:1.5px;transition:all .2s;border:1px solid var(--green);text-transform:uppercase;position:relative;overflow:hidden}
+.btn-g{font-family:var(--mono);font-size:11px;padding:13px 30px;background:transparent;color:var(--green);text-decoration:none;border-radius:2px;font-weight:700;letter-spacing:1.5px;transition:all .2s;border:1px solid var(--green);text-transform:uppercase;position:relative;overflow:hidden}
 .btn-g::before{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);animation:btnShimmer 2.4s ease-in-out infinite}
 @keyframes btnShimmer{0%{left:-100%}60%,100%{left:150%}}
-.btn-g:hover{background:transparent;color:var(--green);box-shadow:0 0 20px rgba(0,255,136,.15)}
+.btn-g:hover{background:var(--green);color:var(--bg);box-shadow:0 0 20px rgba(0,255,136,.3)}
 .btn-g:hover::before{animation:none;opacity:0}
 .btn-o{font-family:var(--mono);font-size:11px;padding:13px 30px;background:transparent;color:var(--text);text-decoration:none;border-radius:2px;letter-spacing:1.5px;transition:all .2s;border:1px solid var(--border);text-transform:uppercase}
 .btn-o:hover{border-color:var(--text);color:var(--white)}
