@@ -38,11 +38,11 @@ const ABOUT_DATA = {
       cardClass: "ic-card-c",
       title: "Kotlin Everywhere",
       subtitle: "// kmp · jetpack compose",
-      body: "Hands-on experience building and shipping multiple Android & iOS applications, including apps with thousands of installs and long-term open-source projects.",
+      body: "I've built and shipped multiple Android & iOS apps - some with thousands of installs, others long-running open-source projects I'm still actively maintaining.",
       list: [
-        "<strong>Kotlin Multiplatform</strong> - Android, iOS, Desktop",
+        "<strong>Kotlin Multiplatform</strong> - one codebase, Android + iOS + Desktop",
         "<strong>Jetpack Compose</strong> - MVVM & Clean Architecture",
-        "<strong>Coroutines & Flow</strong> - Room, DataStore & APIs"
+        "<strong>Coroutines & Flow</strong> - Room, DataStore & REST APIs"
       ]
     },
     {
@@ -51,11 +51,11 @@ const ABOUT_DATA = {
       cardClass: "ic-card-r",
       title: "I Break Things",
       subtitle: "// frida · ghidra · xposed",
-      body: "Expertise in Android Security and Reverse-engineering (APK & Native). I find vulnerabilities, patch them, and ship the fix before anyone else notices.",
+      body: "I specialize in Android Security and reverse engineering - APKs, native libs, the works. I find vulnerabilities, patch them, and ship the fix before anyone notices.",
       list: [
-        "<strong>Runtime Hooking</strong> - Custom Xposed & Frida",
+        "<strong>Runtime Hooking</strong> - custom Xposed modules & Frida scripts",
         "<strong>Core Android</strong> - Background & Accessibility Services",
-        "<strong>APK hardening</strong> - obfuscation that fights back"
+        "<strong>APK Hardening</strong> - obfuscation that actively fights back"
       ]
     },
     {
@@ -64,11 +64,11 @@ const ABOUT_DATA = {
       cardClass: "ic-card-g",
       title: "UI That Moves Right",
       subtitle: "// canvas · shaders · compose",
-      body: "Not just standard layouts. I build complex custom UI that feels incredibly smooth, pushing the boundaries of what is visually possible on mobile.",
+      body: "Not just standard layouts - I build custom UI that feels alive. Smooth physics, fluid animations, and visual effects that push what's really possible on mobile.",
       list: [
-        "<strong>Complex custom UI</strong> - Fluid animations",
-        "<strong>Interactive graphics</strong> - Canvas API",
-        "<strong>Visual effects</strong> - Graphics Shaders"
+        "<strong>Complex custom UI</strong> - physics-driven animations",
+        "<strong>Interactive graphics</strong> - Canvas API & drawscope tricks",
+        "<strong>Visual effects</strong> - AGSL / Runtime Shaders"
       ]
     },
     {
@@ -77,11 +77,11 @@ const ABOUT_DATA = {
       cardClass: "ic-card-o",
       title: "Beyond Android",
       subtitle: "// rust · c++ · linux · 3d art",
-      body: "In addition to Android, I have a solid 9-year background in Linux, including extensive work with CLI tools, bash scripting, and systems programming.",
+      body: "Beyond Android, I've spent 9 years deep in Linux - CLI tools, bash scripts, and systems programming are second nature to me.",
       list: [
-        "<strong>Rust</strong> - GUI Text Editor, Backend Server",
-        "<strong>C++</strong> - Ray Tracer, Virtual Assistant",
-        "<strong>3D Art</strong> - Blender Modeling and Animation"
+        "<strong>Rust</strong> - built a GUI text editor & backend server",
+        "<strong>C++</strong> - ray tracer, virtual assistant from scratch",
+        "<strong>3D Art</strong> - Blender modeling and animation for fun"
       ]
     }
   ],
@@ -90,7 +90,7 @@ const ABOUT_DATA = {
     availabilityText: "Available for new projects",
     heading: "Let's build something great together",
     paragraphs: [
-      "I'm a developer who cares about <strong>craft</strong> - apps that look great, run smooth, and handle edge cases nobody else thought about.",
+      "I care about <strong>craft</strong> - apps that look great, run smooth, and handle edge cases nobody else thought about.",
       "Whether it's a <strong>new Android product</strong>, a <strong>security audit</strong>, or an open-source collab - I'm always open to interesting problems. I also do <strong>3D animations in Blender</strong> for fun, so I can make your app look cool too."
     ],
     links: [

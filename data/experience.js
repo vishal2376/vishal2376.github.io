@@ -12,10 +12,10 @@ const EXPERIENCE_DATA = [
       { text: "Security", class: "tb-lead" }
     ],
     bullets: [
-      "Own the end-to-end security of Marrow - runtime tamper detection, Frida/Xposed hook detection, and RASP systems that respond to attacks in real time.",
-      "Offensive security research: reverse engineer the app with Ghidra & Jadx, find the attack surface, patch it, and ship hardened code before anyone outside notices.",
-      "Build content protection systems preventing unauthorized recording, screenshotting, and redistribution of premium course material.",
-      "APK hardening, certificate pinning, bytecode-level obfuscation - raising the cost of attacks high enough that it's not worth trying."
+      "I own the end-to-end security of Marrow - runtime tamper detection, Frida/Xposed hook detection, and RASP systems that respond to attacks in real time.",
+      "Offensive security work: I reverse engineer the app with Ghidra & Jadx, find the attack surface, patch it, and ship hardened code before anyone outside notices.",
+      "I build content protection systems to prevent unauthorized recording, screenshotting, and redistribution of premium course material.",
+      "APK hardening, certificate pinning, bytecode-level obfuscation - I raise the cost of attacks high enough that it's just not worth trying."
     ],
     tags: [
       { text: "RASP", class: "tt-r" },
@@ -40,9 +40,9 @@ const EXPERIENCE_DATA = [
       { text: "Internship", class: "tb-intern" }
     ],
     bullets: [
-      "Built an internal KMP app for managing sales and availability - single Clean MVVM codebase running on both Android and iOS simultaneously. Zero duplicated business logic.",
-      "Created an internal Android library from scratch for synchronized event logging, making the QA testing flow dramatically faster with zero manual correlation overhead.",
-      "Implemented better UI and smooth custom animations in the Marrow app using modern Jetpack Compose APIs - things that actually made engineers say \"wait, how did you do that?\""
+      "I built an internal KMP app for managing sales and availability - one Clean MVVM codebase running on both Android and iOS. Zero duplicated business logic.",
+      "I created an internal Android library from scratch for synchronized event logging, making QA testing dramatically faster with no manual correlation overhead.",
+      "I shipped better UI and smooth custom animations in the Marrow app using modern Jetpack Compose APIs."
     ],
     tags: [
       { text: "Kotlin Multiplatform", class: "tt-c" },
@@ -65,8 +65,8 @@ const EXPERIENCE_DATA = [
       { text: "Internship", class: "tb-intern" }
     ],
     bullets: [
-      "Built a social connection app from scratch - 30+ custom layouts, 25+ API routes integrated, and a full MVVM + Hilt architecture set up before the senior team could finish their morning standup.",
-      "Shipped Firebase Auth, real-time Crashlytics monitoring, and a user profile system with active feedback loops - production-quality on the first intern project."
+      "I built a social connection app from scratch - 30+ custom layouts, 25+ API routes integrated, full MVVM + Hilt architecture. Got it to production quality within the first internship project.",
+      "I shipped Firebase Auth, real-time Crashlytics monitoring, and a user profile system with feedback loops."
     ],
     tags: [
       { text: "Kotlin", class: "tt-c" },
@@ -82,21 +82,21 @@ const ACHIEVEMENTS_DATA = [
   {
     icon: "🏆",
     title: "AIR 101 · Zonal Rank 3",
-    description: "National Cyber Olympiad (NCO) - top national ranking in cyber / computing competition."
+    description: "National Cyber Olympiad (NCO) - top national ranking in cyber and computing."
   },
   {
     icon: "🌍",
     title: "App Sold Internationally",
-    description: "ScrollBlock was acquired internationally - built, shipped, and sold entirely by Vishal while in college."
+    description: "ScrollBlock was acquired internationally. I built, shipped, and sold it solo while still in college."
   },
   {
     icon: "🚀",
     title: "Google Jetpack Compose Camp",
-    description: "Completed Google-organized Android Jetpack Compose Camp - certified in modern Android UI."
+    description: "Completed Google's Android Jetpack Compose Camp - certified in modern Android UI development."
   },
   {
     icon: "⭐",
     title: "4k+ Play Store Installs",
-    description: "Combined installs across Snaptick (1k+, 4.6★) and Git Coach (3k+, 4.8★) within months of launch."
+    description: "Combined installs across Snaptick (1k+, 4.6 stars) and Git Coach (3k+, 4.8 stars) within months of launch."
   }
 ];

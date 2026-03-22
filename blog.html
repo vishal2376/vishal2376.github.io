@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Vishal's blog - thoughts on Android, KMP, security engineering, and reverse engineering.">
+    <title>Vishal's Blog | Android, KMP & Security</title>
+    <link rel="icon" type="image/png" href="assets/images/favicons.png">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Share+Tech+Mono&family=Barlow:ital,wght@0,300;0,400;0,600;0,700;0,900;1,900&family=Barlow+Condensed:ital,wght@0,700;0,900;1,900&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="blog.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="data/blogs.js" defer></script>
+    <script src="blog.js" defer></script>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-r"></div>
+<div id="prog"></div>
+
+<header>
+  <nav class="nav" id="nav">
+    <a href="index.html" class="nav-logo">
+      <span class="p">~/</span><span class="n">vishal2376</span><span class="c">█</span>
+    </a>
+    <ul class="nav-links">
+      <!-- Hidden on blog page -->
+    </ul>
+    <div style="display:flex;align-items:center;">
+      <a href="index.html" class="nav-cv">Portfolio</a>
+    </div>
+    <button class="ham" id="ham" aria-label="Menu"><span></span><span></span><span></span></button>
+  </nav>
+  <div class="mob" id="mob">
+    <a href="blog.html">Blog Home</a>
+    <a href="index.html" style="color:var(--green)">Back to Portfolio</a>
+  </div>
+</header>
+
+<!-- HOME VIEW: post list -->
+<div id="view-home" class="view">
+  <div class="blog-home-wrap">
+    <div class="blog-home-header">
+      <div class="stag">writing</div>
+      <h1 class="blog-home-title">Blog & <em>Writeups</em></h1>
+      <p class="blog-home-sub">// security research · android engineering · reverse engineering · open source</p>
+    </div>
+    <div id="posts-grid" class="posts-grid"></div>
+  </div>
+</div>
+
+<!-- POST VIEW: reading layout -->
+<div id="view-post" class="view hidden">
+  <div class="post-wrap">
+    <!-- Reading column -->
+    <div class="post-col">
+      <button class="back-btn" id="back-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        All Posts
+      </button>
+      <article id="post-article" class="post-article"></article>
+    </div>
+    <!-- Table of contents -->
+    <aside class="toc-col" id="toc-col">
+      <div class="toc-label">// on this page</div>
+      <nav id="toc-nav" class="toc-nav"></nav>
+    </aside>
+  </div>
+</div>
+
+<script>
+  // ── Portfolio chrome (cursor, progress, nav, hamburger) ──
+  const curDot = document.getElementById('cur');
+  const curRing = document.getElementById('cur-r');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    curDot.style.left = mx + 'px'; curDot.style.top = my + 'px';
+  });
+  (function tick() {
+    rx += (mx - rx) * .13; ry += (my - ry) * .13;
+    curRing.style.left = rx + 'px'; curRing.style.top = ry + 'px';
+    requestAnimationFrame(tick);
+  })();
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => document.body.classList.add('on-link'));
+    el.addEventListener('mouseleave', () => document.body.classList.remove('on-link'));
+  });
+  const prog = document.getElementById('prog');
+  window.addEventListener('scroll', () => {
+    const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+    prog.style.width = Math.min(pct, 100) + '%';
+  });
+  const blogNav = document.getElementById('nav');
+  window.addEventListener('scroll', () => blogNav.classList.toggle('stuck', window.scrollY > 20));
+  const hamBtn = document.getElementById('ham');
+  const mobMenu = document.getElementById('mob');
+  hamBtn.addEventListener('click', () => {
+    const open = mobMenu.classList.toggle('open');
+    const s = hamBtn.querySelectorAll('span');
+    s[0].style.transform = open ? 'rotate(45deg) translateY(8px)' : '';
+    s[1].style.opacity = open ? '0' : '1';
+    s[2].style.transform = open ? 'rotate(-45deg) translateY(-8px)' : '';
+  });
+  mobMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    mobMenu.classList.remove('open');
+    hamBtn.querySelectorAll('span').forEach(s => { s.style.transform = ''; s.style.opacity = '1'; });
+  }));
+</script>
+
+<button id="btn-top" class="btn-top" aria-label="Go to top">↑</button>
+</body>
+</html>

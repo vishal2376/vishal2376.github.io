@@ -3,45 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Vishal Singh - KMP & Android Developer · Security Engineer · 5 years building apps people love.">
-<title>Vishal Singh // KMP · Android · Security</title>
+<meta name="description" content="Vishal Singh - Android & KMP Developer, Security Engineer. I build apps people love and make them impossible to hack.">
+<title>Vishal Singh | Android & KMP Developer</title>
+<link rel="icon" type="image/png" href="assets/images/favicons.png">
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow:ital,wght@0,300;0,400;0,600;0,700;0,900;1,900&family=Barlow+Condensed:ital,wght@0,700;0,900;1,900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<!-- Blog Dependencies -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<link id="hljs-theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<!-- Local Data -->
 <script src="data/about.js" defer></script>
 <script src="data/experience.js" defer></script>
 <script src="data/projects.js" defer></script>
 <script src="data/skills.js" defer></script>
+<script src="data/blogs.js" defer></script>
 <script src="script.js" defer></script>
 </head>
 <body>
-
-<!-- Hidden easter egg comment 🥚 -->
-<!-- TODO: hire Vishal - seriously though, he reverse engineers games for fun -->
-<!-- frida -U -f com.your.company -l vishal_is_hired.js --no-pause -->
-
 <div id="cur"></div>
 <div id="cur-r"></div>
 <div id="prog"></div>
 
-<!-- ═══════ KONAMI EASTER EGG ═══════ -->
-<div id="konami-overlay">
-  <div class="ko-title">GOD MODE ACTIVATED</div>
-  <div class="ko-code">
-    <span style="color:var(--dim)">// Frida hook injected ✓</span><br>
-    Interceptor.attach(target, {<br>
-    &nbsp;&nbsp;onEnter: <span style="color:var(--cyan)">function</span>(args) {<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;args[<span style="color:var(--yellow)">1</span>] = ptr(<span style="color:var(--yellow)">0</span>); <span style="color:var(--dim)">// damage = 0</span><br>
-    &nbsp;&nbsp;}<br>
-    });<br><br>
-    <span style="color:var(--green)">// You found the easter egg 🎉</span><br>
-    <span style="color:var(--dim)">// ↑↑↓↓←→←→ B A - classic.</span>
-  </div>
-  <div class="ko-close" onclick="document.getElementById('konami-overlay').classList.remove('show')">[ CLOSE ] esc</div>
-</div>
-
-<div id="logo-tip"></div>
-
-<!-- ═══════ NAV ═══════ -->
 <header>
   <nav class="nav" id="nav">
     <a href="#hero" class="nav-logo" id="nav-logo">
@@ -54,7 +38,9 @@
       <li><a href="#skills"><span class="ni">04.</span>Skills</a></li>
       <li><a href="#contact"><span class="ni">05.</span>Contact</a></li>
     </ul>
-    <a href="https://drive.google.com/file/d/1m8AgJZq-NJCkTrRacLJvQGCCh-hvh6iC/view?usp=sharing" target="_blank" class="nav-cv">resume.pdf</a>
+    <div style="display:flex; align-items:center;">
+      <a href="blog.html" class="nav-blog">Read Blogs</a>
+    </div>
     <button class="ham" id="ham" aria-label="Menu"><span></span><span></span><span></span></button>
   </nav>
   <div class="mob" id="mob">
@@ -63,7 +49,7 @@
     <a href="#work">03. Projects</a>
     <a href="#skills">04. Skills</a>
     <a href="#contact">05. Contact</a>
-    <a href="https://drive.google.com/file/d/1m8AgJZq-NJCkTrRacLJvQGCCh-hvh6iC/view?usp=sharing" target="_blank">Resume / CV ↗</a>
+    <a href="blog.html" style="color:var(--cyan)">Read My Blogs ↗</a>
   </div>
 </header>
 
@@ -125,6 +111,8 @@
   <div class="projs" id="projects-container">
   </div>
 </section>
+
+
 
 <!-- ═══════ SKILLS ═══════ -->
 <section class="sec sec-b" id="skills">
@@ -188,11 +176,9 @@
   </div>
 </div>
 
-<!-- ═══════ IMAGE ZOOM OVERLAY ═══════ -->
-<div id="img-zoom" class="img-zoom-overlay">
-  <button id="zoom-close" class="zoom-close" aria-label="Close zoom">&times;</button>
-  <img id="zoom-img" src="" alt="Zoomed image">
-</div>
 
+
+
+<button id="btn-top" class="btn-top" aria-label="Go to top">↑</button>
 </body>
 </html>

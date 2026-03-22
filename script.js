@@ -7,7 +7,7 @@ function renderHero() {
   if(!c) return;
   const d = ABOUT_DATA.hero;
   
-  let chipsHtml = d.chips.map(c => `<span class="chip ${c.class}">${c.text}</span>`).join('<span class="chip-sep">/</span>');
+  let chipsHtml = d.chips.map(chip => `<span class="chip ${chip.class}">${chip.text}</span>`).join('<span class="chip-sep">/</span>');
   
   let socialsHtml = `
     <a href="${d.socials.github}" target="_blank" rel="noopener" class="soc" title="GitHub"><svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.6-4.04-1.6-.55-1.4-1.34-1.77-1.34-1.77-1.1-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.5 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.25 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58C20.57 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg></a>
@@ -27,11 +27,19 @@ function renderHero() {
     </div>
     <p class="h-desc">${d.description}</p>
     <div class="h-btns">
-      <a href="#work" class="btn-g">View Projects</a>
-      <a href="${d.resumeLink}" target="_blank" class="btn-o">Resume / CV</a>
+      <a href="#work" class="btn-o">View Projects</a>
+      <a href="${d.resumeLink}" target="_blank" class="btn-g">Resume / CV</a>
     </div>
     <div class="h-soc">${socialsHtml}</div>
   `;
+
+  // Keep hero name visible after animation ends
+  const heroName = document.querySelector('.h-name');
+  if (heroName) {
+    heroName.addEventListener('animationend', () => {
+      heroName.style.opacity = '1';
+    }, { once: true });
+  }
 }
 
 function renderAbout() {
@@ -170,7 +178,9 @@ function renderSkills() {
   
   let secSkills = SKILLS_DATA.security.map(s => `
     <div class="sec-skill">
-      <div class="sec-skill-icon">${s.icon}</div>
+      <div class="sec-skill-icon">
+        <img src="${s.icon}" alt="${s.name}" loading="lazy" ${s.filter ? `style="filter:${s.filter}"` : ''}>
+      </div>
       <div class="sec-skill-info">
         <div class="sec-skill-name">${s.name}</div>
         <div class="sec-skill-cat">${s.category}</div>
@@ -179,12 +189,10 @@ function renderSkills() {
   `).join('');
 
   c.innerHTML = `
-    <!-- Dev Skills -->
     <div class="rv">
       <div class="skill-section-label">Development Stack</div>
       <div class="skills-grid">${devSkills}</div>
     </div>
-    <!-- Security Skills -->
     <div class="rv">
       <div class="skill-section-label sec-label-r">Security &amp; Reverse Engineering</div>
       <div class="sec-skills-grid">${secSkills}</div>
@@ -210,7 +218,7 @@ function renderContact() {
   `;
 }
 
-// Call all render functions FIRST
+// Render everything
 renderHero();
 renderAbout();
 renderExperience();
@@ -219,189 +227,156 @@ renderProjects();
 renderSkills();
 renderContact();
 
-// ─── Cursor ───
-const cur=document.getElementById('cur'),ring=document.getElementById('cur-r');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
-(function tick(){rx+=(mx-rx)*.13;ry+=(my-ry)*.13;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(tick)})();
-document.querySelectorAll('a,button').forEach(el=>{
-  el.addEventListener('mouseenter',()=>document.body.classList.add('on-link'));
-  el.addEventListener('mouseleave',()=>document.body.classList.remove('on-link'));
+// ── Custom cursor ──
+const curDot = document.getElementById('cur');
+const curRing = document.getElementById('cur-r');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  curDot.style.left = mx + 'px';
+  curDot.style.top = my + 'px';
+});
+(function tick() {
+  rx += (mx - rx) * .13;
+  ry += (my - ry) * .13;
+  curRing.style.left = rx + 'px';
+  curRing.style.top = ry + 'px';
+  requestAnimationFrame(tick);
+})();
+document.querySelectorAll('a, button').forEach(el => {
+  el.addEventListener('mouseenter', () => document.body.classList.add('on-link'));
+  el.addEventListener('mouseleave', () => document.body.classList.remove('on-link'));
 });
 
-// ─── Progress bar ───
-const prog=document.getElementById('prog');
-window.addEventListener('scroll',()=>{
-  const pct=window.scrollY/(document.body.scrollHeight-window.innerHeight)*100;
-  prog.style.width=Math.min(pct,100)+'%';
+// ── Progress bar ──
+const prog = document.getElementById('prog');
+window.addEventListener('scroll', () => {
+  const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+  prog.style.width = Math.min(pct, 100) + '%';
 });
 
-// ─── Nav stuck state ───
-const nav=document.getElementById('nav');
-window.addEventListener('scroll',()=>nav.classList.toggle('stuck',window.scrollY>20));
+// ── Nav stuck state ──
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => nav.classList.toggle('stuck', window.scrollY > 20));
 
-// ─── Active nav link on scroll ───
-const secs=document.querySelectorAll('section[id]');
-const nls=document.querySelectorAll('.nav-links a');
-const navIO=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting){
-      nls.forEach(a=>a.classList.remove('active'));
-      const m=document.querySelector('.nav-links a[href="#'+e.target.id+'"]');
-      if(m) m.classList.add('active');
+// ── Active nav link on scroll ──
+const secs = document.querySelectorAll('section[id]');
+const nls = document.querySelectorAll('.nav-links a');
+const navIO = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      nls.forEach(a => a.classList.remove('active'));
+      const m = document.querySelector('.nav-links a[href="#' + e.target.id + '"]');
+      if (m) m.classList.add('active');
     }
   });
-},{threshold:0.3,rootMargin:'-60px 0px -40% 0px'});
-secs.forEach(s=>navIO.observe(s));
+}, { threshold: 0.3, rootMargin: '-60px 0px -40% 0px' });
+secs.forEach(s => navIO.observe(s));
 
-// ─── Scroll reveal ───
-const rvIO=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); });
-},{threshold:0.1});
-document.querySelectorAll('.rv').forEach(r=>rvIO.observe(r));
+// ── Scroll reveal ──
+const rvIO = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.rv').forEach(r => rvIO.observe(r));
 
-// ─── Staggered skill reveal ───
-const skillIO=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('revealed'); });
-},{threshold:0.15});
-document.querySelectorAll('.skills-grid, .sec-skills-grid').forEach(g=>skillIO.observe(g));
+// ── Staggered skill reveal ──
+const skillIO = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('revealed'); });
+}, { threshold: 0.15 });
+document.querySelectorAll('.skills-grid, .sec-skills-grid').forEach(g => skillIO.observe(g));
 
-// ─── Achievements reveal ───
-const achIO=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('revealed'); });
-},{threshold:0.15});
-document.querySelectorAll('.ach-row').forEach(a=>achIO.observe(a));
+// ── Achievements reveal ──
+const achIO = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('revealed'); });
+}, { threshold: 0.15 });
+document.querySelectorAll('.ach-row').forEach(a => achIO.observe(a));
 
-// ─── Hamburger ───
-const ham=document.getElementById('ham'),mob=document.getElementById('mob');
-ham.addEventListener('click',()=>{
-  const o=mob.classList.toggle('open');
-  const s=ham.querySelectorAll('span');
-  s[0].style.transform=o?'rotate(45deg) translateY(8px)':'';
-  s[1].style.opacity=o?'0':'1';
-  s[2].style.transform=o?'rotate(-45deg) translateY(-8px)':'';
+// ── Hamburger menu ──
+const ham = document.getElementById('ham');
+const mob = document.getElementById('mob');
+ham.addEventListener('click', () => {
+  const open = mob.classList.toggle('open');
+  const spans = ham.querySelectorAll('span');
+  spans[0].style.transform = open ? 'rotate(45deg) translateY(8px)' : '';
+  spans[1].style.opacity = open ? '0' : '1';
+  spans[2].style.transform = open ? 'rotate(-45deg) translateY(-8px)' : '';
 });
-mob.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
+mob.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
   mob.classList.remove('open');
-  ham.querySelectorAll('span').forEach(s=>{s.style.transform='';s.style.opacity='1'});
+  ham.querySelectorAll('span').forEach(s => { s.style.transform = ''; s.style.opacity = '1'; });
 }));
 
-// ─── GitHub live stats ───
-async function fetchGHStats(){
+// ── GitHub live stats ──
+async function fetchGHStats() {
   try {
     const [user, repos] = await Promise.all([
-      fetch('https://api.github.com/users/vishal2376').then(r=>r.json()),
-      fetch('https://api.github.com/users/vishal2376/repos?per_page=100').then(r=>r.json())
+      fetch('https://api.github.com/users/vishal2376').then(r => r.json()),
+      fetch('https://api.github.com/users/vishal2376/repos?per_page=100').then(r => r.json())
     ]);
-    const stars = Array.isArray(repos) ? repos.reduce((s,r)=>s+r.stargazers_count,0) : 0;
-    const forks = Array.isArray(repos) ? repos.reduce((s,r)=>s+r.forks_count,0) : 0;
-    countUp('gh-repos', user.public_repos||0);
+    const stars = Array.isArray(repos) ? repos.reduce((s, r) => s + r.stargazers_count, 0) : 0;
+    const forks = Array.isArray(repos) ? repos.reduce((s, r) => s + r.forks_count, 0) : 0;
+    countUp('gh-repos', user.public_repos || 0);
     countUp('gh-stars', stars);
-    countUp('gh-followers', user.followers||0);
+    countUp('gh-followers', user.followers || 0);
     countUp('gh-forks', forks);
-  } catch(e){ /* silently fail, dashes stay */ }
+  } catch(err) { /* silently fail */ }
 }
-function countUp(id, target){
-  const el=document.getElementById(id); if(!el) return;
-  let cur=0; const step=Math.ceil(target/40);
-  const t=setInterval(()=>{
-    cur=Math.min(cur+step,target);
-    el.textContent=cur;
-    if(cur>=target) clearInterval(t);
-  },30);
+function countUp(id, target) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  let n = 0;
+  const step = Math.ceil(target / 40);
+  const t = setInterval(() => {
+    n = Math.min(n + step, target);
+    el.textContent = n;
+    if (n >= target) clearInterval(t);
+  }, 30);
 }
 fetchGHStats();
-const cform=document.getElementById('cform'),fok=document.getElementById('fok');
-cform.addEventListener('submit',async e=>{
+
+// ── Contact form ──
+const cform = document.getElementById('cform');
+const fok = document.getElementById('fok');
+cform.addEventListener('submit', async e => {
   e.preventDefault();
-  const btn=cform.querySelector('.btn-send');
-  btn.textContent='Sending...';btn.disabled=true;
-  try{
-    const r=await fetch(cform.action,{method:'POST',body:new FormData(cform),headers:{'Accept':'application/json'}});
-    if(r.ok){cform.reset();fok.style.display='block';btn.textContent='Sent ✓';}
-    else{btn.textContent='Error - try again';btn.disabled=false;}
-  }catch{btn.textContent='Error - try again';btn.disabled=false;}
+  const btn = cform.querySelector('.btn-send');
+  btn.textContent = 'Sending...';
+  btn.disabled = true;
+  try {
+    const r = await fetch(cform.action, { method: 'POST', body: new FormData(cform), headers: { 'Accept': 'application/json' } });
+    if (r.ok) { cform.reset(); fok.style.display = 'block'; btn.textContent = 'Sent'; }
+    else { btn.textContent = 'Error - try again'; btn.disabled = false; }
+  } catch { btn.textContent = 'Error - try again'; btn.disabled = false; }
 });
 
-// ─── EASTER EGG 1: Konami Code ───
-const konami=[38,38,40,40,37,39,37,39,66,65];
-let ki=0;
-document.addEventListener('keydown',e=>{
-  if(e.keyCode===konami[ki]){ki++;if(ki===konami.length){document.getElementById('konami-overlay').classList.add('show');ki=0;}}
-  else ki=0;
-});
+// ── Project image hover zoom ──
+const hoverPreview = document.createElement('div');
+hoverPreview.id = 'img-hover-preview';
+hoverPreview.innerHTML = '<img id="hover-preview-img" src="" alt="">';
+document.body.appendChild(hoverPreview);
 
-// ─── EASTER EGG 2: Logo click counter ───
-const logo=document.getElementById('nav-logo');
-const tip=document.getElementById('logo-tip');
-const msgs=['🔍 Inspecting element...','🪝 Frida attached...','💉 Injecting script...','🎯 args[1] = ptr(0); // god mode','🎉 You think like Vishal. You\'re hired.'];
-let lc=0,lt=null;
-logo.addEventListener('click',e=>{
-  if(lc===0)e.preventDefault();
-  lc++;
-  tip.textContent=msgs[Math.min(lc-1,msgs.length-1)];
-  tip.classList.add('show');
-  clearTimeout(lt);
-  lt=setTimeout(()=>{tip.classList.remove('show');if(lc>=msgs.length)lc=0;},2200);
-});
+const hoverImg = document.getElementById('hover-preview-img');
 
-// ─── EASTER EGG 3: Hover name 3s glitch ───
-const heroName=document.querySelector('.h-name');
-let ht=null;
-if(heroName){
-  heroName.addEventListener('mouseenter',()=>{
-    ht=setTimeout(()=>{
-      heroName.style.animation='none';
-      heroName.style.textShadow='-3px 0 #ff3860, 3px 0 #00cfff';
-      setTimeout(()=>{heroName.style.textShadow='';},600);
-    },2000);
+document.querySelectorAll('.p-vis img').forEach(img => {
+  img.addEventListener('click', (e) => {
+    e.stopPropagation();
+    hoverImg.src = img.src;
+    hoverPreview.classList.add('show');
   });
-  heroName.addEventListener('mouseleave',()=>clearTimeout(ht));
-}
-
-// ─── EASTER EGG 4: Type "frida" anywhere ───
-let typed='';
-document.addEventListener('keypress',e=>{
-  typed=(typed+e.key).slice(-5);
-  if(typed==='frida'){
-    const fl=document.createElement('div');
-    fl.style.cssText='position:fixed;bottom:24px;right:24px;background:#0f1318;border:1px solid rgba(0,255,136,.3);padding:14px 20px;font-family:var(--mono);font-size:12px;color:#00ff88;z-index:9999;border-radius:2px;animation:fi .3s ease';
-    fl.innerHTML='// <span style="color:#00cfff">Frida</span> detected 👀<br><span style="color:#4a5568">nice try - hook detection active</span>';
-    document.body.appendChild(fl);
-    setTimeout(()=>fl.remove(),3500);
-    typed='';
-  }
 });
 
-// ─── IMAGE ZOOM OVERLAY ───
-const zoomOverlay = document.getElementById('img-zoom');
-const zoomImg = document.getElementById('zoom-img');
-const zoomClose = document.getElementById('zoom-close');
+hoverPreview.addEventListener('click', () => {
+  hoverPreview.classList.remove('show');
+});
 
-if(zoomOverlay && zoomImg) {
-  // Open zoom on image click
-  document.querySelectorAll('.p-vis img').forEach(img => {
-    img.addEventListener('click', () => {
-      zoomImg.src = img.src;
-      zoomOverlay.classList.add('active');
-    });
+// ── Go to top button ──
+const btnTop = document.getElementById('btn-top');
+if (btnTop) {
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 400) btnTop.classList.add('show');
+    else btnTop.classList.remove('show');
   });
-
-  // Close zoom on button click or background click
-  const closeZoom = () => {
-    zoomOverlay.classList.remove('active');
-    setTimeout(() => { zoomImg.style.transform = ''; }, 400); // reset pan on close
-  };
-  zoomClose.addEventListener('click', closeZoom);
-  zoomOverlay.addEventListener('click', (e) => {
-    if(e.target === zoomOverlay) closeZoom();
-  });
-
-  // Smooth pan effect with mouse
-  zoomOverlay.addEventListener('mousemove', (e) => {
-    if(!zoomOverlay.classList.contains('active')) return;
-    const x = (e.clientX / window.innerWidth - 0.5) * 20; // max 10px shift
-    const y = (e.clientY / window.innerHeight - 0.5) * 20;
-    zoomImg.style.transform = `scale(1.05) translate(${-x}px, ${-y}px)`;
+  btnTop.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 }
