@@ -262,16 +262,33 @@ window.addEventListener('scroll', () => nav.classList.toggle('stuck', window.scr
 // ── Active nav link on scroll ──
 const secs = document.querySelectorAll('section[id]');
 const nls = document.querySelectorAll('.nav-links a');
-const navIO = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      nls.forEach(a => a.classList.remove('active'));
-      const m = document.querySelector('.nav-links a[href="#' + e.target.id + '"]');
-      if (m) m.classList.add('active');
+
+window.addEventListener('scroll', () => {
+  let current = '';
+  const scrollY = window.scrollY;
+  const viewportHeight = window.innerHeight;
+  const documentHeight = document.documentElement.scrollHeight;
+  
+  if (scrollY + viewportHeight >= documentHeight - 60) {
+    // Reached the exact bottom
+    current = 'contact';
+  } else {
+    secs.forEach(sec => {
+      const secTop = sec.offsetTop;
+      if (scrollY >= secTop - viewportHeight / 3) {
+        current = sec.getAttribute('id');
+      }
+    });
+  }
+
+  nls.forEach(a => {
+    a.classList.remove('active');
+    const href = a.getAttribute('href');
+    if (href === '#' + current) {
+      a.classList.add('active');
     }
   });
-}, { threshold: 0.3, rootMargin: '-60px 0px -40% 0px' });
-secs.forEach(s => navIO.observe(s));
+});
 
 // ── Scroll reveal ──
 const rvIO = new IntersectionObserver(entries => {
