@@ -5,11 +5,9 @@ const ABOUT_DATA = {
     lastName: "SINGH",
     chips: [
       { text: "KMP · Android · iOS", class: "chip-c" },
-      { text: "Security Engineer", class: "chip-r" },
-      { text: "Open Source", class: "chip-o" }
+      { text: "Security Engineer", class: "chip-r" }
     ],
-    availability: "Open to opportunities",
-    description: "I build <strong>Android apps people love</strong> and make them <strong>impossible to hack</strong>. Passionate about clean UI, open source, and reverse engineering things just to understand how they work.",
+    description: "I build <strong>Android apps that people love</strong> . Passionate about <strong>Clean & Modern UI</strong>, <strong>Open source</strong>, and <strong>Reverse Engineering</strong> things just to understand how they work.",
     resumeLink: "https://drive.google.com/file/d/1m8AgJZq-NJCkTrRacLJvQGCCh-hvh6iC/view?usp=sharing",
     socials: {
       github: "https://github.com/vishal2376",
@@ -23,7 +21,6 @@ const ABOUT_DATA = {
     name: "Vishal Singh",
     role: "KMP · Android · Security",
     badges: [
-      { text: "5 yrs experience", class: "ib-g" },
       { text: "RE Enthusiast", class: "ib-r" },
       { text: "KMP Dev", class: "ib-c" },
       { text: "Open Source", class: "ib-g" }
@@ -87,7 +84,6 @@ const ABOUT_DATA = {
   ],
 
   contact: {
-    availabilityText: "Available for new projects",
     heading: "Let's build something great together",
     paragraphs: [
       "I care about <strong>craft</strong> - apps that look great, run smooth, and handle edge cases nobody else thought about.",
