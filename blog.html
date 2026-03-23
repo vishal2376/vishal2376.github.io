@@ -49,6 +49,25 @@
       <h1 class="blog-home-title">Blog & <em>Writeups</em></h1>
       <p class="blog-home-sub">// security research · android engineering · reverse engineering · open source</p>
     </div>
+    <div class="blog-controls" id="blog-controls">
+      <div class="blog-search-wrap">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="blog-search" placeholder="Search writeups..." autocomplete="off">
+      </div>
+      <div class="custom-sel" id="tag-sel-wrap" tabindex="0">
+        <span id="tag-lbl">Tag: All</span>
+        <span class="sel-arrow">▼</span>
+        <div class="sel-menu" id="tag-menu"></div>
+      </div>
+      <div class="custom-sel" id="sort-sel-wrap" tabindex="0">
+        <span id="sort-lbl">Latest First</span>
+        <span class="sel-arrow">▼</span>
+        <div class="sel-menu" id="sort-menu">
+          <div class="s-opt active" onclick="setSort('new', 'Latest First', event)">Latest First</div>
+          <div class="s-opt" onclick="setSort('old', 'Oldest First', event)">Oldest First</div>
+        </div>
+      </div>
+    </div>
     <div id="posts-grid" class="posts-grid"></div>
   </div>
 </div>
