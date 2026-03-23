@@ -1,7 +1,21 @@
 const BLOGS_DATA = [
     {
+        id: "frida-labs-walkthrough",
+        title: "Frida Labs Walkthrough: 0x1 to 0xB",
+        date: "March 23, 2026",
+        description:
+            "A comprehensive walkthrough of the Frida-Labs challenge series. Learn dynamic instrumentation by solving 11 Android challenges from basic method hooking to patching ARM64 assembly at runtime.",
+        readTime: "18 min read",
+        tags: [
+            { text: "Security", class: "ptag-b" },
+            { text: "Frida", class: "ptag-p" },
+            { text: "Android", class: "ptag-o" }
+        ],
+        filename: "frida-labs-walkthrough.md"
+    },
+    {
         id: "intent-attack-surface-walkthrough",
-        title: "Android Intent Attack Surface",
+        title: "Android Intent Attack Surface Walkthrough",
         date: "March 23, 2026",
         description:
             "A complete walkthrough of every flag in the HexTree Attack Surface challenge - from basic exported activities to PendingIntent abuse, intent redirection, and caller spoofing on Android 15.",
