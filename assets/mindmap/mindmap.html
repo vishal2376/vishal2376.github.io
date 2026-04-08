@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mindmap: Call Graph Plugin for IntelliJ & Android Studio</title>
+  <meta name="description" content="Interactive call graph visualizer for Kotlin. Generate call chains instantly from IntelliJ IDEA or Android Studio." />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='40' height='40' rx='10' fill='%231e1e2e'/%3E%3Ccircle cx='10' cy='20' r='3.5' fill='%23a6e3a1'/%3E%3Ccircle cx='20' cy='20' r='5' fill='%23f5c2e7'/%3E%3Ccircle cx='30' cy='12' r='3.5' fill='%2389b4fa'/%3E%3Ccircle cx='30' cy='28' r='3.5' fill='%2389b4fa'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,900;1,700&family=Barlow:wght@300;400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg:      #0d0e17;
+      --panel:   #1e1e2e;
+      --panel2:  #181825;
+      --border:  #313244;
+      --surface: #45475a;
+      --text:    #cdd6f4;
+      --dim:     #6c7086;
+      --white:   #eef2f7;
+      --mauve:   #cba6f7;
+      --blue:    #89b4fa;
+      --green:   #a6e3a1;
+      --peach:   #fab387;
+      --pink:    #f5c2e7;
+      --teal:    #94e2d5;
+      --mono: 'Share Tech Mono', monospace;
+      --sans: 'Barlow', sans-serif;
+      --cond: 'Barlow Condensed', sans-serif;
+      --r-xs:  4px;
+      --r-sm:  8px;
+      --r-md:  12px;
+      --r-lg:  16px;
+      --r-xl:  20px;
+      --r-full: 999px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.6; overflow-x: hidden; cursor: none; }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--panel2); }
+    ::-webkit-scrollbar-thumb { background: var(--border); }
+    ::-webkit-scrollbar-thumb:hover { background: var(--mauve); }
+
+    /* ── PROGRESS BAR ── */
+    #prog { position: fixed; top: 0; left: 0; height: 2px; width: 0; background: var(--mauve); box-shadow: 0 0 10px var(--mauve); z-index: 10000; transition: width .06s linear; }
+
+    /* ── CURSOR ── */
+    #cur   { position: fixed; width: 9px; height: 9px; background: var(--mauve); border-radius: 50%; pointer-events: none; z-index: 99999; transform: translate(-50%,-50%); box-shadow: 0 0 10px rgba(203,166,247,.7); transition: background .15s, transform .12s; }
+    #cur-r { position: fixed; width: 34px; height: 34px; border: 1px solid rgba(203,166,247,.3); border-radius: 50%; pointer-events: none; z-index: 99998; transform: translate(-50%,-50%); transition: all .18s ease; }
+    body.on-link #cur   { transform: translate(-50%,-50%) scale(2.2); background: transparent; border: 1px solid var(--mauve); box-shadow: none; }
+    body.on-link #cur-r { transform: translate(-50%,-50%) scale(.3); opacity: 0; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      height: 58px; display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px;
+      background: rgba(13,14,23,.88); backdrop-filter: blur(18px);
+      border-bottom: 1px solid transparent; transition: border-color .3s;
+    }
+    nav.stuck { border-bottom-color: var(--border); }
+
+    .nav-logo { font-family: var(--mono); font-size: 14px; color: var(--white); text-decoration: none; letter-spacing: 1px; }
+    .nav-logo span { color: var(--mauve); animation: blink 1.1s step-end infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .nav-links { display: flex; align-items: center; gap: 28px; list-style: none; }
+    .nav-links a { font-family: var(--mono); font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--dim); text-decoration: none; transition: color .2s; }
+    .nav-links a:hover { color: var(--mauve); }
+
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+
+    .nav-portfolio { font-family: var(--mono); font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--dim); text-decoration: none; transition: color .2s; }
+    .nav-portfolio:hover { color: var(--blue); }
+
+    .nav-install { font-family: var(--mono); font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--mauve); border: 1px solid var(--mauve); padding: 7px 18px; text-decoration: none; border-radius: var(--r-full); transition: background .2s, color .2s, transform .15s, box-shadow .2s; }
+    .nav-install:hover { background: var(--mauve); color: var(--bg); box-shadow: 0 0 16px rgba(203,166,247,.3); }
+    .nav-install:active { transform: scale(.95); }
+
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: none; }
+    .hamburger span { width: 22px; height: 2px; background: var(--dim); transition: .3s; }
+
+    /* ── MOBILE MENU ── */
+    .mobile-menu { position: fixed; top: 58px; left: 0; right: 0; background: rgba(13,14,23,.98); border-bottom: 1px solid var(--border); padding: 24px; display: none; flex-direction: column; gap: 20px; z-index: 999; }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { font-family: var(--mono); font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--dim); text-decoration: none; }
+    .mobile-menu a:hover { color: var(--mauve); }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      text-align: center; padding: 100px 24px 80px; position: relative; overflow: hidden;
+    }
+    .hero-grid {
+      position: absolute; inset: 0; pointer-events: none;
+      background-image: linear-gradient(rgba(203,166,247,.025) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(203,166,247,.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .hero-glow {
+      position: absolute; width: 700px; height: 500px; pointer-events: none;
+      background: radial-gradient(ellipse, rgba(203,166,247,.06) 0%, transparent 70%);
+      top: 50%; left: 50%; transform: translate(-50%, -58%);
+    }
+
+    .hero-content { position: relative; z-index: 1; max-width: 680px; }
+
+    .hero-icon {
+      width: 72px; height: 72px; margin: 0 auto 32px;
+      animation: iconFloat 4s ease-in-out infinite;
+      filter: drop-shadow(0 0 18px rgba(203,166,247,.4));
+    }
+    @keyframes iconFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+    .hero-tag { font-family: var(--mono); font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--mauve); margin-bottom: 18px; display: block; }
+
+    .hero-title {
+      font-family: var(--cond); font-size: clamp(56px, 9vw, 104px); font-weight: 900;
+      letter-spacing: -2px; line-height: .92; color: var(--white); text-transform: uppercase; margin-bottom: 22px;
+    }
+    .hero-title em { font-style: normal; color: var(--mauve); }
+
+    .hero-sub { font-size: 17px; font-weight: 300; color: var(--text); max-width: 480px; margin: 0 auto 36px; line-height: 1.7; }
+
+    .hero-langs { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 40px; }
+    .lang-badge { font-family: var(--mono); font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; padding: 5px 14px; border: 1px solid var(--border); color: var(--dim); border-radius: var(--r-full); transition: transform .15s, box-shadow .15s; display: inline-flex; align-items: center; gap: 6px; }
+    .lang-badge.kotlin { border-color: rgba(203,166,247,.5); color: var(--mauve); background: rgba(203,166,247,.07); }
+    .lang-badge.kotlin:hover { box-shadow: 0 0 14px rgba(203,166,247,.25); transform: scale(1.04); }
+    .lang-badge.wip { opacity: .45; cursor: default; pointer-events: none; }
+    .lang-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; box-shadow: 0 0 6px rgba(166,227,161,.6); }
+    .lang-dot.wip { background: var(--surface); box-shadow: none; }
+    .lang-soon { font-size: 9px; letter-spacing: 1px; opacity: .7; }
+
+    .hero-ctas { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+    .scroll-hint {
+      position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      opacity: 1; transition: opacity .4s;
+    }
+    .scroll-hint.hidden { opacity: 0; pointer-events: none; }
+    .scroll-hint-label { font-family: var(--mono); font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--dim); }
+    .scroll-hint-line {
+      width: 1px; height: 48px;
+      background: linear-gradient(to bottom, var(--mauve), transparent);
+      animation: scrollLine 1.6s ease-in-out infinite;
+    }
+    @keyframes scrollLine {
+      0%   { transform: scaleY(0); transform-origin: top; opacity: 1; }
+      50%  { transform: scaleY(1); transform-origin: top; opacity: 1; }
+      51%  { transform: scaleY(1); transform-origin: bottom; opacity: 1; }
+      100% { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
+    }
+
+    .btn-primary {
+      font-family: var(--mono); font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+      padding: 13px 28px; background: transparent; color: var(--mauve);
+      border: 1px solid var(--mauve); cursor: none; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 8px; font-weight: 600;
+      border-radius: var(--r-full); position: relative; overflow: hidden;
+      transition: color .2s, transform .2s, box-shadow .2s;
+    }
+    .btn-primary::before {
+      content: '';
+      position: absolute; top: 0; left: -100%;
+      width: 60%; height: 100%;
+      background: linear-gradient(105deg, transparent 20%, rgba(203,166,247,.25) 50%, transparent 80%);
+      animation: btnShimmer 2s linear infinite;
+    }
+    @keyframes btnShimmer {
+      0%   { left: -80%; }
+      100% { left: 160%; }
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(203,166,247,.2); color: var(--white); border-color: rgba(203,166,247,.8); }
+    .btn-primary:active { transform: scale(.96) translateY(0); box-shadow: none; }
+
+    .btn-ghost { font-family: var(--mono); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; padding: 13px 28px; background: transparent; color: var(--text); border: 1px solid var(--border); cursor: none; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: border-color .2s, color .2s, transform .2s, background .2s; border-radius: var(--r-full); }
+    .btn-ghost:hover { border-color: var(--blue); color: var(--blue); transform: translateY(-2px); background: rgba(137,180,250,.05); }
+    .btn-ghost:active { transform: scale(.96) translateY(0); }
+
+    /* ── SECTIONS ── */
+    .section-wrap { max-width: 1100px; margin: 0 auto; padding: 88px 48px; }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 0 48px; }
+
+    .sec-tag { font-family: var(--mono); font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--peach); display: block; margin-bottom: 10px; }
+    .sec-title { font-family: var(--cond); font-size: clamp(30px, 4.5vw, 48px); font-weight: 900; letter-spacing: -1px; color: var(--white); line-height: 1; margin-bottom: 12px; }
+    .sec-title em { font-style: normal; color: var(--mauve); }
+    .sec-sub { font-size: 14px; color: var(--dim); font-weight: 300; }
+
+    /* ── ABOUT ── */
+    #about .grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 72px; align-items: center; }
+
+    .about-text p { font-size: 15px; color: var(--text); line-height: 1.8; margin-bottom: 18px; font-weight: 300; }
+    .about-text p:last-of-type { margin-bottom: 0; }
+
+    .compat-list { display: flex; flex-direction: column; gap: 10px; margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--border); }
+    .compat-row { display: flex; align-items: center; gap: 12px; font-family: var(--mono); font-size: 12px; color: var(--dim); }
+    .compat-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); flex-shrink: 0; box-shadow: 0 0 8px rgba(166,227,161,.45); }
+
+    .about-img-wrap { position: relative; }
+    .about-img { width: 100%; display: block; border: 1px solid var(--border); border-radius: var(--r-lg); transition: border-color .3s, transform .3s, box-shadow .3s; }
+    .about-img:hover { border-color: rgba(203,166,247,.4); transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,.4); }
+    .about-img-cap { font-family: var(--mono); font-size: 10px; color: var(--dim); text-align: center; margin-top: 10px; letter-spacing: 1px; text-transform: uppercase; }
+
+    /* ── FEATURES ── */
+    #features .feat-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; }
+
+    .feat-card {
+      background: var(--panel); border: 1px solid var(--border); padding: 32px 28px;
+      position: relative; overflow: hidden; border-radius: var(--r-lg);
+      transition: border-color .25s, background .25s, transform .25s, box-shadow .25s;
+    }
+    .feat-card::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+      background: var(--mauve); border-radius: 0 var(--r-xs) var(--r-xs) 0;
+      transform: scaleY(0); transform-origin: bottom; transition: transform .3s cubic-bezier(.34,1.56,.64,1);
+    }
+    .feat-card:hover { border-color: var(--surface); background: #22223a; transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,.3); }
+    .feat-card:hover::before { transform: scaleY(1); }
+    .feat-card:hover .feat-num { color: var(--mauve); }
+
+    .feat-num { font-family: var(--mono); font-size: 11px; color: var(--dim); letter-spacing: 2px; margin-bottom: 14px; display: block; transition: color .2s; }
+    .feat-title { font-family: var(--cond); font-size: 20px; font-weight: 700; color: var(--white); margin-bottom: 14px; }
+    .feat-list { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+    .feat-list li { font-size: 13.5px; color: var(--dim); display: flex; gap: 8px; align-items: flex-start; line-height: 1.5; }
+    .feat-list li::before { content: '▸'; color: var(--mauve); font-size: 11px; margin-top: 2px; flex-shrink: 0; }
+
+    /* ── SHOWCASE ── */
+    #showcase .stabs { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+    .stab { font-family: var(--mono); font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; padding: 7px 16px; background: var(--panel); border: 1px solid var(--border); color: var(--dim); cursor: none; border-radius: var(--r-full); transition: background .2s, color .2s, border-color .2s, transform .15s; }
+    .stab:hover { color: var(--text); border-color: var(--surface); transform: translateY(-1px); }
+    .stab:active { transform: scale(.95); }
+    .stab.active { background: var(--mauve); color: var(--bg); border-color: var(--mauve); }
+
+    .sshow-wrap { position: relative; border: 1px solid var(--border); background: var(--panel2); overflow: hidden; border-radius: var(--r-lg); }
+    .sshot { display: none; width: 100%; animation: fadeImg .3s ease; }
+    .sshot.active { display: block; }
+    @keyframes fadeImg { from { opacity: 0; transform: scale(.99); } to { opacity: 1; transform: scale(1); } }
+    .sshot-cap { padding: 10px 18px; background: var(--panel2); border-top: 1px solid var(--border); font-family: var(--mono); font-size: 11px; color: var(--dim); letter-spacing: .5px; }
+
+    /* ── HOW TO USE ── */
+    .howto-steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 0; margin-bottom: 56px; position: relative; }
+    .howto-steps::before { content: ''; position: absolute; top: 36px; left: calc(16.67% + 16px); right: calc(16.67% + 16px); height: 1px; background: linear-gradient(90deg, var(--mauve), rgba(203,166,247,.2)); pointer-events: none; }
+
+    .step-card { background: var(--panel); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 28px 24px; position: relative; transition: border-color .25s, transform .25s, box-shadow .25s; margin: 0 6px; }
+    .step-card:first-child { margin-left: 0; }
+    .step-card:last-child  { margin-right: 0; }
+    .step-card:hover { border-color: rgba(203,166,247,.4); transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,.3); }
+    .step-card:hover .step-icon-wrap { background: rgba(203,166,247,.15); border-color: rgba(203,166,247,.4); }
+
+    .step-top { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .step-icon-wrap { width: 48px; height: 48px; border-radius: var(--r-md); background: rgba(203,166,247,.07); border: 1px solid rgba(203,166,247,.2); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; transition: background .2s, border-color .2s; }
+    .step-badge { font-family: var(--mono); font-size: 10px; letter-spacing: 2px; color: var(--mauve); background: rgba(203,166,247,.08); border: 1px solid rgba(203,166,247,.2); border-radius: var(--r-full); padding: 3px 10px; }
+    .step-title { font-family: var(--cond); font-size: 18px; font-weight: 700; color: var(--white); margin-bottom: 8px; }
+    .step-desc { font-size: 13.5px; color: var(--dim); line-height: 1.65; font-weight: 300; }
+    .step-desc code { font-family: var(--mono); font-size: 12px; background: var(--panel2); border: 1px solid var(--border); padding: 1px 6px; color: var(--mauve); border-radius: var(--r-xs); }
+    .step-tip { display: flex; align-items: flex-start; gap: 8px; margin-top: 14px; padding: 10px 12px; background: rgba(203,166,247,.05); border-radius: var(--r-sm); border: 1px solid rgba(203,166,247,.1); font-size: 12px; color: var(--dim); line-height: 1.55; }
+    .step-tip::before { content: '💡'; font-size: 12px; flex-shrink: 0; }
+
+    /* Controls tabs */
+    .controls-wrap { background: var(--panel); border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden; }
+    .controls-tabs { display: flex; border-bottom: 1px solid var(--border); }
+    .ctrl-tab { font-family: var(--mono); font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; padding: 14px 24px; background: transparent; border: none; color: var(--dim); cursor: none; transition: color .2s, background .2s; flex: 1; text-align: center; }
+    .ctrl-tab:hover { color: var(--text); background: rgba(255,255,255,.02); }
+    .ctrl-tab.active { color: var(--mauve); background: rgba(203,166,247,.05); border-bottom: 2px solid var(--mauve); }
+
+    .ctrl-panel { display: none; padding: 24px; }
+    .ctrl-panel.active { display: block; }
+
+    /* OS toggle */
+    .os-toggle { display: flex; gap: 6px; align-items: center; margin-bottom: 18px; }
+    .os-toggle-label { font-family: var(--mono); font-size: 10px; color: var(--dim); letter-spacing: 1px; text-transform: uppercase; margin-right: 4px; }
+    .os-btn { font-family: var(--mono); font-size: 11px; padding: 4px 14px; border-radius: var(--r-full); border: 1px solid var(--border); background: transparent; color: var(--dim); cursor: none; transition: all .15s; letter-spacing: .5px; }
+    .os-btn:hover { border-color: var(--surface); color: var(--text); }
+    .os-btn.active { background: rgba(137,180,250,.12); border-color: rgba(137,180,250,.4); color: var(--blue); }
+
+    /* platform-aware kbd */
+    .kbd-mac, .kbd-win { display: inline-flex; align-items: center; gap: 3px; }
+    [data-os="win"] .kbd-mac { display: none; }
+    [data-os="mac"] .kbd-win { display: none; }
+    .kbd { font-family: var(--mono); font-size: 10px; color: var(--blue); background: rgba(137,180,250,.08); border: 1px solid rgba(137,180,250,.2); padding: 2px 7px; white-space: nowrap; flex-shrink: 0; border-radius: var(--r-xs); }
+    .kbd-sym { font-size: 13px; line-height: 1; }
+
+    .shortcuts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .shortcut-row { display: flex; align-items: center; gap: 8px; padding: 9px 12px; background: var(--panel2); border: 1px solid var(--border); border-radius: var(--r-sm); transition: background .15s, border-color .15s, transform .15s; }
+    .shortcut-row:hover { background: #22223a; border-color: var(--surface); transform: translateX(3px); }
+    .kbd { font-family: var(--mono); font-size: 10px; color: var(--blue); background: rgba(137,180,250,.08); border: 1px solid rgba(137,180,250,.2); padding: 2px 7px; white-space: nowrap; flex-shrink: 0; border-radius: var(--r-xs); }
+    .shortcut-desc { font-size: 12px; color: var(--dim); }
+
+    .mouse-table { width: 100%; border-collapse: collapse; }
+    .mouse-table th { font-family: var(--mono); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--dim); text-align: left; padding: 8px 14px; border-bottom: 1px solid var(--border); }
+    .mouse-table td { font-size: 13px; color: var(--dim); padding: 10px 14px; border-bottom: 1px solid rgba(49,50,68,.4); vertical-align: top; }
+    .mouse-table td:first-child { font-family: var(--mono); font-size: 11px; color: var(--text); }
+    .mouse-table tr:last-child td { border-bottom: none; }
+    .mouse-table tr:hover td { background: rgba(203,166,247,.03); }
+
+    /* ── INSTALL ── */
+    #install .install-inner { max-width: 600px; margin: 0 auto; text-align: center; }
+    #install .sec-header { margin-bottom: 40px; }
+
+    .install-box { background: var(--panel); border: 1px solid var(--border); padding: 48px 40px; position: relative; overflow: hidden; border-radius: var(--r-xl); }
+    .install-box::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 0%, rgba(203,166,247,.06) 0%, transparent 60%); pointer-events: none; border-radius: var(--r-xl); }
+
+    #mp-widget { margin: 0 auto 28px; display: flex; justify-content: center; min-height: 48px; }
+
+    .install-reqs { display: flex; flex-direction: column; gap: 8px; text-align: left; padding-top: 24px; border-top: 1px solid var(--border); }
+    .req-row { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 12px; color: var(--dim); }
+    .req-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+
+    .install-alt { font-family: var(--mono); font-size: 11px; color: var(--dim); margin-top: 18px; }
+    .install-alt a { color: var(--blue); text-decoration: none; }
+    .install-alt a:hover { text-decoration: underline; }
+
+    /* ── HELP ── */
+    #help .faq { display: flex; flex-direction: column; gap: 8px; }
+
+    .faq-item { background: var(--panel); border: 1px solid var(--border); overflow: hidden; border-radius: var(--r-md); transition: border-color .25s, transform .2s, box-shadow .2s; }
+    .faq-item:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,.2); }
+    .faq-item.open { border-color: rgba(203,166,247,.3); box-shadow: 0 4px 20px rgba(203,166,247,.08); }
+
+    .faq-q { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 22px; cursor: none; user-select: none; }
+    .faq-q-text { font-size: 14px; font-weight: 600; color: var(--white); }
+    .faq-chevron { width: 18px; height: 18px; flex-shrink: 0; color: var(--dim); transition: transform .3s cubic-bezier(.34,1.56,.64,1), color .2s; }
+    .faq-item.open .faq-chevron { transform: rotate(180deg); color: var(--mauve); }
+
+    .faq-a { max-height: 0; overflow: hidden; transition: max-height .4s ease; }
+    .faq-item.open .faq-a { max-height: 700px; }
+    .faq-a-inner { padding: 4px 22px 22px; border-top: 1px solid var(--border); }
+
+    .faq-a p { font-size: 13.5px; color: var(--dim); line-height: 1.7; margin-bottom: 10px; }
+    .faq-a p:last-child { margin-bottom: 0; }
+    .faq-a ol, .faq-a ul { margin-left: 18px; display: flex; flex-direction: column; gap: 6px; }
+    .faq-a li { font-size: 13.5px; color: var(--dim); line-height: 1.6; }
+    .faq-a code { font-family: var(--mono); font-size: 12px; background: var(--panel2); border: 1px solid var(--border); padding: 1px 6px; color: var(--mauve); }
+    .faq-a strong { color: var(--text); font-weight: 600; }
+
+    .note { display: flex; gap: 10px; margin-top: 12px; padding: 11px 14px; background: rgba(250,179,135,.05); border-left: 2px solid var(--peach); font-size: 13px; color: var(--dim); }
+    .note::before { content: '!'; color: var(--peach); font-family: var(--mono); font-size: 13px; flex-shrink: 0; }
+
+    /* ── FOOTER ── */
+    footer { border-top: 1px solid var(--border); padding: 32px 48px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; }
+    .footer-left { font-family: var(--mono); font-size: 12px; color: var(--dim); }
+    .footer-left a { color: var(--mauve); text-decoration: none; }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-family: var(--mono); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--dim); text-decoration: none; transition: color .2s; }
+    .footer-links a:hover { color: var(--blue); }
+
+    /* ── ROADMAP ── */
+    .roadmap-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .roadmap-lang { border-color: rgba(250,179,135,.2) !important; }
+    .roadmap-lang:hover { border-color: rgba(250,179,135,.45) !important; }
+    .roadmap-lang .roadmap-title { color: var(--peach); }
+    .roadmap-card {
+      display: flex; align-items: flex-start; gap: 16px;
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: var(--r-md); padding: 24px 22px;
+      transition: border-color .2s, transform .2s, box-shadow .2s;
+      position: relative; overflow: hidden;
+    }
+    .roadmap-card::after {
+      content: 'SOON'; font-family: var(--mono); font-size: 9px; letter-spacing: 2px;
+      color: var(--peach); border: 1px solid rgba(250,179,135,.3);
+      background: rgba(250,179,135,.07); border-radius: var(--r-full);
+      padding: 2px 8px; position: absolute; top: 14px; right: 14px;
+    }
+    .roadmap-card:hover { border-color: rgba(250,179,135,.3); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.25); }
+    .roadmap-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+    .roadmap-title { font-family: var(--cond); font-size: 17px; font-weight: 700; color: var(--white); margin-bottom: 6px; }
+    .roadmap-desc { font-size: 13px; color: var(--dim); line-height: 1.6; font-weight: 300; }
+
+    @media (max-width: 900px) { .roadmap-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 540px) { .roadmap-grid { grid-template-columns: 1fr; } }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 960px) {
+      .howto-steps { grid-template-columns: 1fr; }
+      .howto-steps::before { display: none; }
+      .step-card { margin: 0 0 12px 0 !important; }
+      .roadmap-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 900px) {
+      #about .grid { grid-template-columns: 1fr; gap: 40px; }
+      #features .feat-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      nav { padding: 0 24px; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .section-wrap { padding: 64px 24px; }
+      .divider { margin: 0 24px; }
+      .shortcuts-grid { grid-template-columns: 1fr; }
+      .controls-tabs { flex-direction: column; }
+      footer { padding: 28px 24px; }
+    }
+    @media (max-width: 500px) {
+      .hero-ctas { flex-direction: column; align-items: center; }
+      .btn-primary, .btn-ghost { width: 100%; justify-content: center; max-width: 280px; }
+      .stab { font-size: 10px; padding: 6px 10px; }
+      .roadmap-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="prog"></div>
+<div id="cur"></div>
+<div id="cur-r"></div>
+
+<!-- ── NAV ── -->
+<nav id="nav">
+  <a href="#hero" class="nav-logo">~/mindmap<span>█</span></a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#showcase">Showcase</a></li>
+    <li><a href="#howto">How To Use</a></li>
+    <li><a href="#install">Install</a></li>
+    <li><a href="#help">Help</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="https://vishal2376.github.io" target="_blank" rel="noopener" class="nav-install">Portfolio ↗</a>
+  </div>
+  <div class="hamburger" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#features"  class="mobile-link">Features</a>
+  <a href="#showcase"  class="mobile-link">Showcase</a>
+  <a href="#howto"     class="mobile-link">How To Use</a>
+  <a href="#install"   class="mobile-link">Install</a>
+  <a href="#help"      class="mobile-link">Help</a>
+  <a href="https://vishal2376.github.io" target="_blank" rel="noopener" class="mobile-link">Portfolio ↗</a>
+</div>
+
+<!-- ── HERO ── -->
+<section id="hero" style="max-width:100%;padding:0;">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <svg class="hero-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="40" height="40" rx="10" fill="#1e1e2e"/>
+      <rect x="1" y="1" width="38" height="38" rx="9" stroke="#313244" stroke-width="2"/>
+      <path d="M13 20 L17 20" stroke="#6c7086" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M23 18 L28 14" stroke="#6c7086" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M23 22 L28 26" stroke="#6c7086" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="10" cy="20" r="3.5" fill="#a6e3a1"/>
+      <circle cx="20" cy="20" r="5" fill="#f5c2e7"/>
+      <circle cx="30" cy="12" r="3.5" fill="#89b4fa"/>
+      <circle cx="30" cy="28" r="3.5" fill="#89b4fa"/>
+    </svg>
+    <span class="hero-tag">IntelliJ IDEA · Android Studio</span>
+    <h1 class="hero-title">MIND<em>MAP</em></h1>
+    <p class="hero-sub">Click any function. See everything that calls it and everything it calls. No digging, no guessing.</p>
+
+    <div class="hero-ctas">
+      <a href="#install" class="btn-primary">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Install Plugin
+      </a>
+      <a href="https://github.com/vishal2376/mindmap" target="_blank" rel="noopener" class="btn-ghost">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+        GitHub
+      </a>
+    </div>
+  </div>
+
+  <div class="scroll-hint" id="scrollHint">
+    <span class="scroll-hint-label">Scroll</span>
+    <div class="scroll-hint-line"></div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ── ABOUT ── -->
+<div class="section-wrap" id="about">
+  <div class="grid">
+    <div class="about-text">
+      <div style="margin-bottom:32px;">
+        <span class="sec-tag">What is it</span>
+        <h2 class="sec-title">Understand Your<br/><em>Call Graph</em></h2>
+        <p class="sec-sub" style="margin-top:10px;">Instant call chain visualization, right inside your IDE.</p>
+      </div>
+      <p>Mindmap generates an interactive, navigable call graph for any Kotlin function. Place your cursor inside a function body and press <strong>Alt+G</strong> to see every caller, callee, and the full call chain without switching context.</p>
+      <p>Switch between a force-directed <strong>Graph View</strong> and a collapsible <strong>Tree View</strong>. Navigate history, filter nodes, jump to source in one click.</p>
+      <div class="compat-list">
+        <div class="compat-row"><span class="compat-dot"></span>IntelliJ IDEA 2024.3+</div>
+        <div class="compat-row"><span class="compat-dot"></span>Android Studio Ladybug+</div>
+      </div>
+    </div>
+    <div class="about-img-wrap">
+      <img src="screenshots/graph_view.png" alt="Mindmap call graph view" class="about-img" loading="lazy" />
+      <p class="about-img-cap">Graph view: callers left, root center, callees right</p>
+    </div>
+  </div>
+</div>
+
+<hr class="divider" />
+
+<!-- ── FEATURES ── -->
+<div class="section-wrap" id="features">
+  <div style="margin-bottom:48px;">
+    <span class="sec-tag">Capabilities</span>
+    <h2 class="sec-title">Key <em>Features</em></h2>
+    <p class="sec-sub">Everything you need to navigate function relationships at depth.</p>
+  </div>
+  <div class="feat-grid">
+    <div class="feat-card">
+      <span class="feat-num">01 · Graph View</span>
+      <h3 class="feat-title">Interactive Network</h3>
+      <ul class="feat-list">
+        <li>Hierarchical layout: callers left, callees right</li>
+        <li>Box selection &amp; multi-node move</li>
+        <li>Free node positioning, smart duplicate labels</li>
+        <li>Pan (H) and Select (V) tool modes</li>
+        <li>Zoom: scroll, pinch, or +/− keys</li>
+      </ul>
+    </div>
+    <div class="feat-card">
+      <span class="feat-num">02 · Tree View</span>
+      <h3 class="feat-title">Collapsible Tree</h3>
+      <ul class="feat-list">
+        <li>Expand / collapse with chevron icons</li>
+        <li>IDE-native nesting &amp; padding style</li>
+        <li>SVG icons for functions, files, call directions</li>
+        <li>Section headers with call count badges</li>
+        <li>Keyboard navigation between nodes</li>
+      </ul>
+    </div>
+    <div class="feat-card">
+      <span class="feat-num">03 · Analysis</span>
+      <h3 class="feat-title">Deep Inspection</h3>
+      <ul class="feat-list">
+        <li>Bidirectional: outbound calls &amp; inbound callers</li>
+        <li>Trace: double-click to merge call graphs</li>
+        <li>Expand: Cmd/Ctrl+Click to re-center on a function</li>
+        <li>Toggle library / SDK calls on or off</li>
+        <li>Kotlin K1 &amp; K2 compiler support</li>
+      </ul>
+    </div>
+    <div class="feat-card">
+      <span class="feat-num">04 · Navigation</span>
+      <h3 class="feat-title">Stay in Flow</h3>
+      <ul class="feat-list">
+        <li>History: Alt+← / Alt+→ across explored functions</li>
+        <li>Arrow keys to traverse parents, children, siblings</li>
+        <li>Single click or Enter jumps to source</li>
+        <li>Live search filter: press / or f</li>
+        <li>Hover info cards: signature, file, depth, LOC</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<hr class="divider" />
+
+<!-- ── ROADMAP ── -->
+<div class="section-wrap" id="roadmap">
+  <div style="margin-bottom:40px;">
+    <span class="sec-tag">Coming Soon</span>
+    <h2 class="sec-title">Future <em>Roadmap</em></h2>
+    <p class="sec-sub">What's planned next. Contributions welcome on GitHub.</p>
+  </div>
+  <div class="roadmap-grid">
+    <div class="roadmap-card roadmap-lang">
+      <div class="roadmap-icon">☕</div>
+      <div>
+        <h3 class="roadmap-title">Java Support</h3>
+        <p class="roadmap-desc">Full call graph analysis for Java methods across all IntelliJ-based IDEs.</p>
+      </div>
+    </div>
+    <div class="roadmap-card roadmap-lang">
+      <div class="roadmap-icon">🐍</div>
+      <div>
+        <h3 class="roadmap-title">Python Support</h3>
+        <p class="roadmap-desc">Call graph analysis for Python functions when the JetBrains Python plugin is installed.</p>
+      </div>
+    </div>
+    <div class="roadmap-card">
+      <div class="roadmap-icon">📤</div>
+      <div>
+        <h3 class="roadmap-title">Export Options</h3>
+        <p class="roadmap-desc">Save your call graph as SVG, PNG, or JSON for documentation and sharing.</p>
+      </div>
+    </div>
+    <div class="roadmap-card">
+      <div class="roadmap-icon">🎨</div>
+      <div>
+        <h3 class="roadmap-title">Custom Themes</h3>
+        <p class="roadmap-desc">Define your own color palettes to match your IDE or team's style.</p>
+      </div>
+    </div>
+    <div class="roadmap-card">
+      <div class="roadmap-icon">🔎</div>
+      <div>
+        <h3 class="roadmap-title">Advanced Filtering</h3>
+        <p class="roadmap-desc">Filter nodes by depth, visibility modifier, or specific package paths.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider" />
+
+<!-- ── SHOWCASE ── -->
+<div class="section-wrap" id="showcase">
+  <div style="margin-bottom:32px;">
+    <span class="sec-tag">Screenshots</span>
+    <h2 class="sec-title">See It In <em>Action</em></h2>
+  </div>
+  <div class="stabs" role="tablist">
+    <button class="stab active" data-tab="0" role="tab">Graph View</button>
+    <button class="stab" data-tab="1" role="tab">Tree View</button>
+    <button class="stab" data-tab="2" role="tab">Shortcuts</button>
+    <button class="stab" data-tab="3" role="tab">Context Menu</button>
+    <button class="stab" data-tab="4" role="tab">Tooltip</button>
+  </div>
+  <div class="sshow-wrap">
+    <img class="sshot active" src="screenshots/graph_view.png"         alt="Graph View"   loading="lazy" />
+    <img class="sshot"        src="screenshots/tree_view.png"          alt="Tree View"    loading="lazy" />
+    <img class="sshot"        src="screenshots/keyboard_shortcuts.png" alt="Shortcuts"    loading="lazy" />
+    <img class="sshot"        src="screenshots/context_menu.png"       alt="Context Menu" loading="lazy" />
+    <img class="sshot"        src="screenshots/tooltip_info.png"       alt="Tooltip"      loading="lazy" />
+    <div class="sshot-cap" id="sshot-cap">Force-directed graph: callers, root, and callees</div>
+  </div>
+</div>
+
+<hr class="divider" />
+
+<!-- ── HOW TO USE ── -->
+<div class="section-wrap" id="howto">
+  <div style="margin-bottom:48px;">
+    <span class="sec-tag">Get Started</span>
+    <h2 class="sec-title">How To <em>Use</em></h2>
+    <p class="sec-sub">From install to your first call graph in under a minute.</p>
+  </div>
+
+  <!-- 3-step cards -->
+  <div class="howto-steps">
+    <div class="step-card">
+      <div class="step-top">
+        <div class="step-icon-wrap">🗂️</div>
+        <span class="step-badge">STEP 01</span>
+      </div>
+      <h3 class="step-title">Open a Kotlin file</h3>
+      <p class="step-desc">Open any Kotlin file in IntelliJ IDEA or Android Studio. Click inside a function body, not on the declaration line.</p>
+      <div class="step-tip">Cursor must be inside the function body, not on the fun keyword line.</div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-top">
+        <div class="step-icon-wrap">⌨️</div>
+        <span class="step-badge">STEP 02</span>
+      </div>
+      <h3 class="step-title">Press Alt+G</h3>
+      <p class="step-desc">The Mindmap tool window opens instantly with the full call graph for the function at your cursor.</p>
+      <div class="step-tip">Or right-click → <strong style="color:var(--text)">Generate Mindmap</strong> if Alt+G conflicts with another plugin.</div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-top">
+        <div class="step-icon-wrap">🔍</div>
+        <span class="step-badge">STEP 03</span>
+      </div>
+      <h3 class="step-title">Explore the graph</h3>
+      <p class="step-desc">Click any node to jump to source. Press <code>1</code>/<code>2</code> to switch views. Double-click to trace deeper into a call chain.</p>
+      <div class="step-tip">Press <code>?</code> inside the tool window to see all keyboard shortcuts.</div>
+    </div>
+  </div>
+
+  <!-- Tabbed controls -->
+  <div class="controls-wrap">
+    <div class="controls-tabs">
+      <button class="ctrl-tab active" data-ctrl="shortcuts">⌨️ &nbsp;Keyboard Shortcuts</button>
+      <button class="ctrl-tab" data-ctrl="mouse">🖱️ &nbsp;Mouse Controls</button>
+    </div>
+
+    <div class="ctrl-panel active" id="ctrl-shortcuts">
+      <div class="os-toggle">
+        <span class="os-toggle-label">Platform</span>
+        <button class="os-btn active" data-os-btn="mac">🍎 Mac</button>
+        <button class="os-btn" data-os-btn="win">🪟 Windows</button>
+      </div>
+      <div class="shortcuts-grid" id="shortcuts-grid" data-os="mac">
+        <div class="shortcut-row">
+          <span class="kbd-mac"><span class="kbd"><span class="kbd-sym">⌥</span> G</span></span>
+          <span class="kbd-win"><span class="kbd">Alt G</span></span>
+          <span class="shortcut-desc">Generate call graph</span>
+        </div>
+        <div class="shortcut-row">
+          <span class="kbd"><span>1 / 2</span></span>
+          <span class="shortcut-desc">Graph / Tree view</span>
+        </div>
+        <div class="shortcut-row">
+          <span class="kbd">H / V</span>
+          <span class="shortcut-desc">Pan / Select tool</span>
+        </div>
+        <div class="shortcut-row">
+          <span class="kbd-mac"><span class="kbd"><span class="kbd-sym">⌥</span> ← / →</span></span>
+          <span class="kbd-win"><span class="kbd">Alt ← / →</span></span>
+          <span class="shortcut-desc">History back / forward</span>
+        </div>
+        <div class="shortcut-row">
+          <span class="kbd">F</span>
+          <span class="shortcut-desc">Fit all nodes in view</span>
+        </div>
+        <div class="shortcut-row">
+          <span class="kbd">C</span>
+          <span class="shortcut-desc">Center selected node</span>
+        </div>
+        <div class="shortcut-row">
+          <span class="kbd">/ or f</span>
+          <span class="shortcut-desc">Open search filter</span>
+        </div>
+        <div class="shortcut-row">
+          <span class="kbd">L</span>
+          <span class="shortcut-desc">Toggle library calls</span>
+        </div>
+        <div class="shortcut-row">
+          <span class="kbd">+ / −</span>
+          <span class="shortcut-desc">Zoom in / out</span>
+        </div>
+        <div class="shortcut-row">
+          <span class="kbd">Arrow keys</span>
+          <span class="shortcut-desc">Navigate between nodes</span>
+        </div>
+        <div class="shortcut-row">
+          <span class="kbd">Enter</span>
+          <span class="shortcut-desc">Go to source</span>
+        </div>
+        <div class="shortcut-row">
+          <span class="kbd">?</span>
+          <span class="shortcut-desc">Show all shortcuts</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ctrl-panel" id="ctrl-mouse">
+      <div class="os-toggle">
+        <span class="os-toggle-label">Platform</span>
+        <button class="os-btn active" data-os-btn="mac">🍎 Mac</button>
+        <button class="os-btn" data-os-btn="win">🪟 Windows</button>
+      </div>
+      <table class="mouse-table" id="mouse-grid" data-os="mac">
+        <thead><tr><th>Action</th><th>Effect</th></tr></thead>
+        <tbody>
+          <tr><td>Click node / Enter</td><td>Navigate to source code</td></tr>
+          <tr>
+            <td>
+              <span class="kbd-mac"><span class="kbd"><span class="kbd-sym">⌘</span> Click</span></span>
+              <span class="kbd-win"><span class="kbd">Ctrl Click</span></span>
+            </td>
+            <td>Expand: re-center graph on function</td>
+          </tr>
+          <tr><td>Double-click node</td><td>Trace: merge its call graph into view</td></tr>
+          <tr><td>Drag node (pan mode)</td><td>Move the node freely</td></tr>
+          <tr><td>Drag empty (pan mode)</td><td>Pan the canvas</td></tr>
+          <tr><td>Drag empty (select mode)</td><td>Box / marquee selection</td></tr>
+          <tr><td>Space + drag</td><td>Temporary pan while in select mode</td></tr>
+          <tr><td>Scroll / Pinch</td><td>Zoom in / out</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<hr class="divider" />
+
+<!-- ── INSTALL ── -->
+<div class="section-wrap" id="install">
+  <div class="install-inner">
+    <div style="margin-bottom:40px; text-align:center;">
+      <span class="sec-tag">Installation</span>
+      <h2 class="sec-title">Get Started in <em>Seconds</em></h2>
+      <p class="sec-sub">One click from the JetBrains Marketplace.</p>
+    </div>
+    <div class="install-box">
+      <div id="mp-widget"></div>
+      <div class="install-reqs">
+        <div class="req-row"><span class="req-dot"></span>IntelliJ IDEA 2024.3+</div>
+        <div class="req-row"><span class="req-dot"></span>Android Studio Ladybug (2024.2.1)+</div>
+        <div class="req-row"><span class="req-dot"></span>Kotlin plugin enabled (bundled)</div>
+      </div>
+      <p class="install-alt">Build from source: <a href="https://github.com/vishal2376/mindmap" target="_blank" rel="noopener">github.com/vishal2376/mindmap →</a></p>
+    </div>
+  </div>
+</div>
+
+<hr class="divider" />
+
+<!-- ── HELP ── -->
+<div class="section-wrap" id="help">
+  <div style="margin-bottom:40px;">
+    <span class="sec-tag">Troubleshoot</span>
+    <h2 class="sec-title">Help &amp; <em>FAQ</em></h2>
+    <p class="sec-sub">Common issues and how to resolve them.</p>
+  </div>
+  <div class="faq">
+
+    <div class="faq-item">
+      <div class="faq-q">
+        <span class="faq-q-text">Plugin doesn't appear after installation?</span>
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p>Restart your IDE after installing. If still missing, go to <strong>Settings → Plugins → Installed</strong> and verify Mindmap is listed and enabled. Make sure your IDE is version 2024.3 or newer.</p>
+      </div></div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">
+        <span class="faq-q-text">Alt+G doesn't open the call graph?</span>
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p>Another plugin (commonly <strong>IdeaVim</strong>) may be intercepting the shortcut. To fix:</p>
+        <ol>
+          <li>Go to <strong>Settings → Keymap</strong> and search <code>Generate Mindmap</code>.</li>
+          <li>Assign a different key (e.g. <code>Alt+Shift+G</code>).</li>
+        </ol>
+        <p>You can also right-click inside any function and choose <strong>Generate Mindmap</strong> from the context menu.</p>
+      </div></div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">
+        <span class="faq-q-text">Graph is empty or shows no nodes?</span>
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p>Your cursor must be <strong>inside</strong> the function body, not on the declaration line or at file level. Functions with no callers or callees will show a single root node. That is expected.</p>
+      </div></div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">
+        <span class="faq-q-text">Seeing "JCEF Not Available" in Android Studio?</span>
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p>Mindmap uses <strong>JCEF</strong> to render the interactive graph. IntelliJ IDEA always includes JCEF. This error mainly affects <strong>Android Studio</strong>, which sometimes ships without it.</p>
+        <p><strong>Fix: switch to a JCEF-enabled runtime</strong></p>
+        <ol>
+          <li>Press <code>Cmd+Shift+A</code> (Mac) or <code>Ctrl+Shift+A</code> (Win/Linux) → Find Action.</li>
+          <li>Search <code>Choose Boot Java Runtime for the IDE</code> → press Enter.</li>
+          <li>Select a runtime with <strong>JCEF</strong> in its name and click <strong>OK</strong>.</li>
+          <li>IDE restarts automatically. Then press <code>Alt+G</code> again.</li>
+        </ol>
+        <div class="note">If no JCEF runtime appears, update Android Studio to <strong>Ladybug (2024.2.1)</strong> or newer.</div>
+      </div></div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">
+        <span class="faq-q-text">Graph cuts off or shows too few nodes?</span>
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p>By design: a <strong>300-node cap</strong> and <strong>50 calls-per-function limit</strong> keep the graph performant. Press <code>L</code> to hide library/SDK calls, which significantly reduces noise in large codebases. Use <code>Cmd+Click</code> on specific nodes to expand their subgraph.</p>
+      </div></div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">
+        <span class="faq-q-text">Double-click (Trace) doesn't work?</span>
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">
+        <p>Trace mode is only available in <strong>Graph View</strong>. Press <code>1</code> to switch to Graph View, then double-click any node to merge its call graph into the current view.</p>
+      </div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-left">
+    Built by <a href="https://vishal2376.github.io" target="_blank" rel="noopener">Vishal Singh</a> · MIT License
+  </div>
+  <div class="footer-links">
+    <a href="https://github.com/vishal2376/mindmap" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://plugins.jetbrains.com/plugin/31128" target="_blank" rel="noopener">Marketplace</a>
+    <a href="https://vishal2376.github.io" target="_blank" rel="noopener">Portfolio</a>
+  </div>
+</footer>
+
+<!-- ── SCRIPTS ── -->
+<script src="https://plugins.jetbrains.com/assets/scripts/mp-widget.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+  // Marketplace widget
+  try { MarketplaceWidget.setupMarketplaceWidget('install', 31128, '#mp-widget'); } catch (e) {}
+
+  // Hamburger
+  const hamburger  = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+  document.querySelectorAll('.mobile-link').forEach(a => a.addEventListener('click', () => mobileMenu.classList.remove('open')));
+
+  // Showcase tabs
+  const tabs   = document.querySelectorAll('.stab');
+  const sshots = document.querySelectorAll('.sshot');
+  const capEl  = document.getElementById('sshot-cap');
+  const caps   = [
+    'Force-directed graph: callers, root, and callees',
+    'Collapsible tree: callers and callees grouped by direction',
+    'All keyboard shortcuts at a glance',
+    'Right-click context menu for quick actions',
+    'Hover tooltip showing function signature and metadata'
+  ];
+  tabs.forEach(btn => btn.addEventListener('click', () => {
+    const idx = parseInt(btn.dataset.tab, 10);
+    tabs.forEach((t, i)   => t.classList.toggle('active', i === idx));
+    sshots.forEach((s, i) => s.classList.toggle('active', i === idx));
+    if (capEl) capEl.textContent = caps[idx];
+  }));
+
+  // OS toggle (Mac / Windows)
+  function applyOS(os) {
+    document.querySelectorAll('[data-os]').forEach(el => el.dataset.os = os);
+    document.querySelectorAll('[data-os-btn]').forEach(b => b.classList.toggle('active', b.dataset.osBtn === os));
+  }
+  document.querySelectorAll('[data-os-btn]').forEach(btn =>
+    btn.addEventListener('click', () => applyOS(btn.dataset.osBtn))
+  );
+
+  // Controls tabs (Shortcuts / Mouse)
+  document.querySelectorAll('.ctrl-tab').forEach(btn => btn.addEventListener('click', () => {
+    const id = btn.dataset.ctrl;
+    document.querySelectorAll('.ctrl-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.ctrl-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('ctrl-' + id).classList.add('active');
+  }));
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-q').forEach(btn => btn.addEventListener('click', () => {
+    const item   = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }));
+
+  // Scroll hint
+  const scrollHint = document.getElementById('scrollHint');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 80) scrollHint.classList.add('hidden');
+    else scrollHint.classList.remove('hidden');
+  }, { passive: true });
+
+  // Nav stuck
+  window.addEventListener('scroll', () => document.getElementById('nav').classList.toggle('stuck', window.scrollY > 10));
+
+  // Progress bar
+  const prog = document.getElementById('prog');
+  window.addEventListener('scroll', () => {
+    prog.style.width = Math.min(window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100, 100) + '%';
+  });
+
+  // Custom cursor
+  const cur  = document.getElementById('cur');
+  const curR = document.getElementById('cur-r');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cur.style.left = mx + 'px'; cur.style.top = my + 'px'; });
+  (function tick() { rx += (mx - rx) * .13; ry += (my - ry) * .13; curR.style.left = rx + 'px'; curR.style.top = ry + 'px'; requestAnimationFrame(tick); })();
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => document.body.classList.add('on-link'));
+    el.addEventListener('mouseleave', () => document.body.classList.remove('on-link'));
+  });
+
+});
+</script>
+
+</body>
+</html>
