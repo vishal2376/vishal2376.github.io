@@ -513,47 +513,47 @@
   </div>
   <div class="feat-grid">
     <div class="feat-card">
-      <span class="feat-num">01 · Graph View</span>
-      <h3 class="feat-title">Interactive Network</h3>
+      <span class="feat-num">01 · Interactive Graph</span>
+      <h3 class="feat-title">Advanced Interaction</h3>
       <ul class="feat-list">
         <li>Hierarchical layout: callers left, callees right</li>
-        <li>Box selection &amp; multi-node move</li>
-        <li>Free node positioning, smart duplicate labels</li>
-        <li>Pan (H) and Select (V) tool modes</li>
-        <li>Zoom: scroll, pinch, or +/− keys</li>
+        <li><strong>Live Mini-Map</strong>: VS Code-style orientation</li>
+        <li><strong>Figma-style zoom</strong>: targets cursor position</li>
+        <li>Full pan & select tools (H / V)</li>
+        <li>Right-click or middle-click to pan anywhere</li>
       </ul>
     </div>
     <div class="feat-card">
-      <span class="feat-num">02 · Tree View</span>
-      <h3 class="feat-title">Collapsible Tree</h3>
+      <span class="feat-num">02 · Navigation</span>
+      <h3 class="feat-title">Tree & Multi-View</h3>
       <ul class="feat-list">
-        <li>Expand / collapse with chevron icons</li>
-        <li>IDE-native nesting &amp; padding style</li>
-        <li>SVG icons for functions, files, call directions</li>
-        <li>Section headers with call count badges</li>
-        <li>Keyboard navigation between nodes</li>
+        <li>Collapsible Tree: IDE-native nesting style</li>
+        <li><strong>Abstract Trace</strong>: find concrete implementations</li>
+        <li>History: Alt+← / Alt+→ across functions</li>
+        <li>Arrow keys to traverse parents & siblings</li>
+        <li>Single click or Enter jumps to source</li>
       </ul>
     </div>
     <div class="feat-card">
       <span class="feat-num">03 · Analysis</span>
       <h3 class="feat-title">Deep Inspection</h3>
       <ul class="feat-list">
-        <li>Bidirectional: outbound calls &amp; inbound callers</li>
-        <li>Trace: double-click to merge call graphs</li>
-        <li>Expand: Cmd/Ctrl+Click to re-center on a function</li>
+        <li><strong>Configurable Depth</strong>: 1–5 (Inbound/Outbound)</li>
+        <li><strong>Hide / Unhide Nodes</strong>: declutter your view</li>
+        <li>Hidden Nodes Panel: bottom-left management</li>
+        <li>Double-click to merge subgraphs (Trace)</li>
         <li>Toggle library / SDK calls on or off</li>
-        <li>Kotlin K1 &amp; K2 compiler support</li>
       </ul>
     </div>
     <div class="feat-card">
-      <span class="feat-num">04 · Navigation</span>
-      <h3 class="feat-title">Stay in Flow</h3>
+      <span class="feat-num">04 · Engineering</span>
+      <h3 class="feat-title">Performance & Flow</h3>
       <ul class="feat-list">
-        <li>History: Alt+← / Alt+→ across explored functions</li>
-        <li>Arrow keys to traverse parents, children, siblings</li>
-        <li>Single click or Enter jumps to source</li>
+        <li>Straight-line edges for max rendering FPS</li>
+        <li>Disabled shadows & animations for snappiness</li>
         <li>Live search filter: press / or f</li>
-        <li>Hover info cards: signature, file, depth, LOC</li>
+        <li>Hover info cards: signatures & metadata</li>
+        <li>Kotlin K1 & K2 compiler support</li>
       </ul>
     </div>
   </div>
@@ -598,10 +598,10 @@
       </div>
     </div>
     <div class="roadmap-card">
-      <div class="roadmap-icon">🔎</div>
+      <div class="roadmap-icon">💡</div>
       <div>
-        <h3 class="roadmap-title">Advanced Filtering</h3>
-        <p class="roadmap-desc">Filter nodes by depth, visibility modifier, or specific package paths.</p>
+        <h3 class="roadmap-title">Custom Rules</h3>
+        <p class="roadmap-desc">Define custom exclusion rules or highlighting patterns for specific packages.</p>
       </div>
     </div>
   </div>
@@ -695,7 +695,7 @@
           <span class="shortcut-desc">Generate call graph</span>
         </div>
         <div class="shortcut-row">
-          <span class="kbd"><span>1 / 2</span></span>
+          <span class="kbd">1 / 2</span>
           <span class="shortcut-desc">Graph / Tree view</span>
         </div>
         <div class="shortcut-row">
@@ -703,21 +703,25 @@
           <span class="shortcut-desc">Pan / Select tool</span>
         </div>
         <div class="shortcut-row">
-          <span class="kbd-mac"><span class="kbd"><span class="kbd-sym">⌥</span> ← / →</span></span>
-          <span class="kbd-win"><span class="kbd">Alt ← / →</span></span>
-          <span class="shortcut-desc">History back / forward</span>
+          <span class="kbd">Space (hold)</span>
+          <span class="shortcut-desc">Temporary pan mode</span>
         </div>
         <div class="shortcut-row">
-          <span class="kbd">F</span>
-          <span class="shortcut-desc">Fit all nodes in view</span>
+          <span class="kbd">R</span>
+          <span class="shortcut-desc">Restart / Clear graph</span>
         </div>
         <div class="shortcut-row">
-          <span class="kbd">C</span>
-          <span class="shortcut-desc">Center selected node</span>
+          <span class="kbd">F / C</span>
+          <span class="shortcut-desc">Fit all / Center node</span>
         </div>
         <div class="shortcut-row">
           <span class="kbd">/ or f</span>
           <span class="shortcut-desc">Open search filter</span>
+        </div>
+        <div class="shortcut-row">
+          <span class="kbd-mac"><span class="kbd"><span class="kbd-sym">⌥</span> ← / →</span></span>
+          <span class="kbd-win"><span class="kbd">Alt ← / →</span></span>
+          <span class="shortcut-desc">History back / forward</span>
         </div>
         <div class="shortcut-row">
           <span class="kbd">L</span>
@@ -729,7 +733,7 @@
         </div>
         <div class="shortcut-row">
           <span class="kbd">Arrow keys</span>
-          <span class="shortcut-desc">Navigate between nodes</span>
+          <span class="shortcut-desc">Navigate or pan minimap</span>
         </div>
         <div class="shortcut-row">
           <span class="kbd">Enter</span>
@@ -760,11 +764,12 @@
             <td>Expand: re-center graph on function</td>
           </tr>
           <tr><td>Double-click node</td><td>Trace: merge its call graph into view</td></tr>
-          <tr><td>Drag node (pan mode)</td><td>Move the node freely</td></tr>
-          <tr><td>Drag empty (pan mode)</td><td>Pan the canvas</td></tr>
-          <tr><td>Drag empty (select mode)</td><td>Box / marquee selection</td></tr>
+          <tr><td>Right-drag / Middle-drag</td><td>Pan the canvas</td></tr>
+          <tr><td>Drag on Mini-Map</td><td>Continuous pan / jump to area</td></tr>
           <tr><td>Space + drag</td><td>Temporary pan while in select mode</td></tr>
-          <tr><td>Scroll / Pinch</td><td>Zoom in / out</td></tr>
+          <tr><td>Drag node (pan mode)</td><td>Move the node freely</td></tr>
+          <tr><td>Drag empty (select mode)</td><td>Box / marquee selection</td></tr>
+          <tr><td>Scroll / Pinch</td><td>Figma-style zoom (targets cursor)</td></tr>
         </tbody>
       </table>
     </div>
@@ -863,7 +868,7 @@
         <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
       </div>
       <div class="faq-a"><div class="faq-a-inner">
-        <p>By design: a <strong>300-node cap</strong> and <strong>50 calls-per-function limit</strong> keep the graph performant. Press <code>L</code> to hide library/SDK calls, which significantly reduces noise in large codebases. Use <code>Cmd+Click</code> on specific nodes to expand their subgraph.</p>
+        <p>By design, call graphs can get noisy. Use the **Settings (gear icon)** to increase Trace Depth for both inbound and outbound calls. Press <code>L</code> to hide library/SDK calls, which significantly reduces noise. For specific nodes, use <code>Cmd+Click</code> to re-center or double-click to trace deeper.</p>
       </div></div>
     </div>
 
