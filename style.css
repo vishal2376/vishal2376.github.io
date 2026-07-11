@@ -39,6 +39,9 @@ body::before{content:'';position:fixed;inset:0;opacity:.022;pointer-events:none;
 body.on-link #cur{transform:translate(-50%,-50%) scale(2.2);background:transparent;border:1px solid var(--green);box-shadow:none}
 body.on-link #cur-r{transform:translate(-50%,-50%) scale(.3);opacity:0}
 
+/* Cursor particle trail (canvas) */
+#cur-canvas{position:fixed;inset:0;pointer-events:none;z-index:99997}
+
 /* ═══ NAV ═══ */
 .nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:64px;padding:0 48px;display:flex;align-items:center;justify-content:space-between;background:rgba(10,12,15,.88);backdrop-filter:blur(18px);border-bottom:1px solid transparent;transition:border-color .3s}
 .nav.stuck{border-color:var(--border)}
@@ -129,9 +132,17 @@ body.on-link #cur-r{transform:translate(-50%,-50%) scale(.3);opacity:0}
 .sec-t .f-ok{font-family:var(--mono);font-size:12px;color:var(--green);text-align:center;margin-top:20px;display:none;letter-spacing:1px}
 
 /* ═══ GO TO TOP BUTTON ═══ */
-.btn-top{position:fixed;bottom:40px;right:40px;width:44px;height:44px;background:var(--panel);border:1px solid var(--border);color:var(--cyan);font-family:var(--mono);font-size:20px;border-radius:4px;cursor:pointer;z-index:9000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transform:translateY(20px);transition:all .3s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 4px 12px rgba(0,0,0,.5)}
+.btn-top{position:fixed;bottom:40px;right:40px;width:44px;height:44px;background:var(--panel);border:1px solid var(--cyan);color:var(--cyan);font-family:var(--mono);font-size:20px;border-radius:4px;cursor:pointer;z-index:9000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transform:translateY(20px);transition:all .3s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 4px 12px rgba(0,0,0,.5)}
 .btn-top.show{opacity:1;pointer-events:auto;transform:translateY(0)}
 .btn-top:hover{background:var(--cyan);color:var(--bg);border-color:var(--cyan);box-shadow:0 0 15px rgba(0,207,255,.3);transform:translateY(-3px)}
+
+/* Floating Resume/CV button — identical to the hero .btn-g (shimmer + hover),
+   docked left of the go-to-top button. Reveal slides like .btn-top; hover
+   timing (.2s) is kept matching .btn-g so the fill animates the same way. */
+#btn-cv{position:fixed;bottom:41px;right:96px;z-index:9000;background:var(--panel);opacity:0;pointer-events:none;transform:translateY(20px);transition:opacity .3s cubic-bezier(0.34,1.56,0.64,1),transform .3s cubic-bezier(0.34,1.56,0.64,1),background .2s,color .2s,box-shadow .2s;box-shadow:0 4px 12px rgba(0,0,0,.5)}
+#btn-cv.show{opacity:1;pointer-events:auto;transform:translateY(0)}
+/* ID-level hover so it beats #btn-cv's base background (matches .btn-g fill) */
+#btn-cv:hover{background:var(--green);color:var(--bg);box-shadow:0 0 20px rgba(0,255,136,.3)}
 
 /* ═══ FOOTER ═══ */
 /* reveal */

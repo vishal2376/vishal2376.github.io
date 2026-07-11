@@ -246,6 +246,89 @@ document.querySelectorAll('a, button').forEach(el => {
   el.addEventListener('mouseleave', () => document.body.classList.remove('on-link'));
 });
 
+// ── Pixel particle trail (canvas, pooled square particles) ──
+(function () {
+  // Skip on touch devices and when the user prefers reduced motion.
+  if (window.matchMedia('(pointer: coarse)').matches) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const canvas = document.createElement('canvas');
+  canvas.id = 'cur-canvas';
+  document.body.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+  ctx.imageSmoothingEnabled = false; // keep the pixels crisp
+
+  let W = 0, H = 0, dpr = 1;
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = window.innerWidth; H = window.innerHeight;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.imageSmoothingEnabled = false;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const COLORS = ['0,255,136', '0,255,136', '0,255,136', '0,207,255']; // mostly green, some cyan
+  const SIZES = [4, 6, 8]; // discrete pixel sizes for a chunky, blocky look
+  const MAX = 120;
+  const parts = [];   // active particles
+  const pool = [];    // reusable objects (no GC churn)
+  let last = 0, running = false;
+
+  function spawn(x, y) {
+    const p = pool.pop() || {};
+    p.x = x; p.y = y;
+    p.vx = (Math.random() * 2 - 1) * 0.35;
+    p.vy = 0.25 + Math.random() * 0.6;
+    p.size = SIZES[(Math.random() * SIZES.length) | 0];
+    p.life = 1;
+    p.decay = 0.02 + Math.random() * 0.015;
+    p.col = COLORS[(Math.random() * COLORS.length) | 0];
+    p.rot = Math.random() * Math.PI * 2;              // start angle
+    p.vrot = (Math.random() * 2 - 1) * 0.22;          // spin speed (rad/frame)
+    parts.push(p);
+    if (parts.length > MAX) pool.push(parts.shift());
+  }
+
+  document.addEventListener('mousemove', e => {
+    const now = performance.now();
+    if (now - last < 22) return; // throttle spawns
+    last = now;
+    spawn(e.clientX, e.clientY);
+    if (!running) { running = true; requestAnimationFrame(loop); }
+  }, { passive: true });
+
+  function loop() {
+    ctx.clearRect(0, 0, W, H);
+    for (let i = parts.length - 1; i >= 0; i--) {
+      const p = parts[i];
+      p.life -= p.decay;
+      if (p.life <= 0) { pool.push(parts.splice(i, 1)[0]); continue; }
+      p.x += p.vx; p.y += p.vy;
+      p.rot += p.vrot;                                // spin
+      const s = p.size * (0.35 + p.life * 0.85);      // scale: shrink as it fades
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.fillStyle = `rgba(${p.col},${(p.life * p.life).toFixed(3)})`;
+      ctx.fillRect(-s / 2, -s / 2, s, s);
+      ctx.restore();
+    }
+    if (parts.length) requestAnimationFrame(loop);
+    else { running = false; ctx.clearRect(0, 0, W, H); }
+  }
+
+  // Public API so other effects (e.g. the flying CV button) can emit a trail.
+  window.cursorParticles = {
+    emit(x, y, n) {
+      for (let k = 0; k < (n || 1); k++) spawn(x + (Math.random() * 12 - 6), y + (Math.random() * 12 - 6));
+      if (!running) { running = true; requestAnimationFrame(loop); }
+    }
+  };
+})();
+
 // ── Progress bar ──
 const prog = document.getElementById('prog');
 window.addEventListener('scroll', () => {
@@ -384,14 +467,18 @@ hoverPreview.addEventListener('click', () => {
   hoverPreview.classList.remove('show');
 });
 
-// ── Go to top button ──
+// ── Go to top + floating CV buttons ──
 const btnTop = document.getElementById('btn-top');
-if (btnTop) {
+const btnCv = document.getElementById('btn-cv');
+if (btnCv && typeof ABOUT_DATA !== 'undefined') btnCv.href = ABOUT_DATA.hero.resumeLink;
+
+if (btnTop || btnCv) {
   window.addEventListener('scroll', () => {
-    if (window.scrollY > 400) btnTop.classList.add('show');
-    else btnTop.classList.remove('show');
+    const show = window.scrollY > 400;
+    btnTop?.classList.toggle('show', show);
+    btnCv?.classList.toggle('show', show);
   });
-  btnTop.addEventListener('click', () => {
+  btnTop?.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 }
