@@ -3,7 +3,7 @@ const EXPERIENCE_DATA = [
     year: "2025",
     month: "Jun",
     duration: "Present",
-    role: "SDE-1 · Android Security Engineer",
+    role: "Android Security Engineer (SDE-1)",
     company: "DailyRounds (Marrow)",
     location: "Bangalore · Hybrid",
     isActive: true, // Adds the pulsing glow effect
@@ -12,20 +12,19 @@ const EXPERIENCE_DATA = [
       { text: "Security", class: "tb-lead" }
     ],
     bullets: [
-      "I own the end-to-end security of Marrow - runtime tamper detection, Frida/Xposed hook detection, and RASP systems that respond to attacks in real time.",
-      "Offensive security work: I reverse engineer the app with Ghidra & Jadx, find the attack surface, patch it, and ship hardened code before anyone outside notices.",
-      "I build content protection systems to prevent unauthorized recording, screenshotting, and redistribution of premium course material.",
-      "APK hardening, certificate pinning, bytecode-level obfuscation - I raise the cost of attacks high enough that it's just not worth trying."
+      "I own the runtime security (RASP) for the main app, protecting against reverse engineering, tampering, rooting, hooking, and AI automation attacks using commercial RASP and obfuscation tooling, Ghidra and Jadx, and native code protection.",
+      "I built encryption using native C++ (NDK/JNI) with HMAC, and added Google Play Integrity for app attestation.",
+      "I wrote 10+ security research documents the team uses as reference, and ran a Frida workshop to share runtime attack knowledge across the team."
     ],
     tags: [
       { text: "RASP", class: "tt-r" },
-      { text: "Frida Detection", class: "tt-r" },
-      { text: "Xposed Detection", class: "tt-r" },
       { text: "Reverse Engineering", class: "tt-o" },
       { text: "Ghidra", class: "tt-o" },
-      { text: "Kotlin", class: "tt-c" },
-      { text: "Jetpack Compose", class: "tt-c" },
-      { text: "APK Hardening", class: "tt-p" }
+      { text: "Jadx", class: "tt-o" },
+      { text: "Native C++ (NDK/JNI)", class: "tt-c" },
+      { text: "HMAC", class: "tt-c" },
+      { text: "Play Integrity", class: "tt-p" },
+      { text: "Obfuscation", class: "tt-p" }
     ]
   },
   {
@@ -34,23 +33,22 @@ const EXPERIENCE_DATA = [
     duration: "9 months",
     role: "SDE Intern",
     company: "DailyRounds (Marrow)",
-    location: "Bengaluru · On-site",
+    location: "Remote",
     isActive: false,
     badges: [
       { text: "Internship", class: "tb-intern" }
     ],
     bullets: [
-      "I built an internal KMP app for managing sales and availability - one Clean MVVM codebase running on both Android and iOS. Zero duplicated business logic.",
-      "I created an internal Android library from scratch for synchronized event logging, making QA testing dramatically faster with no manual correlation overhead.",
-      "I shipped better UI and smooth custom animations in the Marrow app using modern Jetpack Compose APIs."
+      "I built an internal sales app with Kotlin Multiplatform (KMP), sharing a single codebase across Android and iOS using Koin, Ktor, Datastore, and Jetpack Compose.",
+      "I built an internal event logging app used daily by QA and developers to verify event logs across Firebase and Mixpanel, cutting event checking from 10-15 minutes to under a minute.",
+      "I worked on a production business app and a custom app installer tool for the team."
     ],
     tags: [
       { text: "Kotlin Multiplatform", class: "tt-c" },
       { text: "Jetpack Compose", class: "tt-c" },
-      { text: "KMP · Android · iOS", class: "tt-p" },
-      { text: "Clean MVVM", class: "tt-p" },
-      { text: "Custom Animations", class: "tt-o" },
-      { text: "Internal Library", class: "tt-o" }
+      { text: "Koin · Ktor", class: "tt-p" },
+      { text: "Datastore", class: "tt-p" },
+      { text: "Firebase · Mixpanel", class: "tt-o" }
     ]
   },
   {
@@ -65,13 +63,14 @@ const EXPERIENCE_DATA = [
       { text: "Internship", class: "tb-intern" }
     ],
     bullets: [
-      "I built a social connection app from scratch - 30+ custom layouts, 25+ API routes integrated, full MVVM + Hilt architecture. Got it to production quality within the first internship project.",
-      "I shipped Firebase Auth, real-time Crashlytics monitoring, and a user profile system with feedback loops."
+      "I created an Android app from scratch that connects individuals for dating or friendship, using Kotlin with 30+ custom layouts and 25+ API routes for an engaging user experience.",
+      "I designed a clean app structure using MVVM architecture, Hilt for dependency management, and Navigation Component for smooth navigation.",
+      "I enhanced app security with Firebase Authentication and kept it stable using Firebase Crashlytics for quick issue resolution."
     ],
     tags: [
       { text: "Kotlin", class: "tt-c" },
-      { text: "Jetpack Compose", class: "tt-c" },
       { text: "MVVM · Hilt", class: "tt-p" },
+      { text: "Navigation Component", class: "tt-p" },
       { text: "Firebase", class: "tt-o" },
       { text: "REST API", class: "tt-o" }
     ]
